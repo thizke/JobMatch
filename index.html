@@ -1,0 +1,2447 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>JobFit Jockey — Executive Job Match Advisor</title>
+        <meta
+            property="og:title"
+            content="JobFit Jockey — Executive Job Match Advisor"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://jobfit-jockey.netlify.app/" />
+        <meta
+            property="og:description"
+            content="Analyze job descriptions vs CV and generate a structured executive job match analysis."
+        />
+        <meta
+            property="og:image"
+            content="https://jobfit-jockey.netlify.app/preview.png"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+        <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+        <style>
+            :root {
+                --bg: #f7f9fc;
+                --card: #ffffff;
+                --ink: #1f2937;
+                --muted: #6b7280;
+                --line: #d1d5db;
+                --navy: #103048;
+                --blue: #204870;
+                --soft: #eef4fb;
+                --good: #047857;
+                --warn: #b45309;
+                --bad: #b91c1c;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                background: var(--bg);
+                color: var(--ink);
+            }
+            .wrap {
+                max-width: 1260px;
+                margin: 28px auto;
+                padding: 0 18px;
+            }
+            .card {
+                background: var(--card);
+                border-radius: 18px;
+                box-shadow: 0 10px 28px rgba(16, 48, 72, 0.08);
+                padding: 30px;
+                margin-bottom: 28px;
+            }
+            h1 {
+                margin: 0 0 8px;
+                color: var(--navy);
+                font-size: 38px;
+                letter-spacing: -0.02em;
+            }
+            h2 {
+                color: var(--navy);
+                font-size: 20px;
+                margin: 0 0 12px;
+            }
+            p {
+                line-height: 1.55;
+            }
+            textarea,
+            input[type="text"],
+            select {
+                width: 100%;
+                border: 1px solid var(--line);
+                border-radius: 12px;
+                padding: 12px 14px;
+                font-size: 14px;
+                color: var(--ink);
+                background: #fff;
+            }
+            textarea {
+                min-height: 220px;
+                resize: vertical;
+            }
+            .smalltext {
+                min-height: 110px;
+            }
+            .promptbox {
+                min-height: 540px;
+                background: #fafcff;
+                font-family: Consolas, "Courier New", monospace;
+                line-height: 1.4;
+            }
+            .row {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            .full {
+                grid-column: 1 / -1;
+            }
+            button {
+                border: none;
+                border-radius: 12px;
+                background: var(--blue);
+                color: #fff;
+                padding: 12px 18px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+            button:hover {
+                filter: brightness(0.97);
+            }
+            button.secondary {
+                background: #e5e7eb;
+                color: #111827;
+            }
+            button.ghost {
+                background: #fff;
+                border: 1px solid var(--line);
+                color: #111827;
+            }
+            .primary-cta {
+                padding: 15px 28px;
+                font-size: 16px;
+                font-weight: 700;
+                background: linear-gradient(135deg, var(--navy), var(--blue));
+            }
+            .status {
+                font-size: 13px;
+                line-height: 1.5;
+                margin-top: 8px;
+                color: var(--muted);
+            }
+            .ok {
+                color: var(--good);
+            }
+            .warn {
+                color: var(--warn);
+            }
+            .bad {
+                color: var(--bad);
+            }
+            .helper {
+                color: var(--muted);
+                font-size: 13px;
+                line-height: 1.45;
+                margin-top: 6px;
+            }
+            .tiny {
+                font-size: 12px;
+                color: var(--muted);
+            }
+            .hidden {
+                display: none !important;
+            }
+            .brand-hero {
+                display: grid;
+                grid-template-columns: 180px 1fr;
+                gap: 26px;
+                align-items: center;
+            }
+            .brand-visual img {
+                max-width: 180px;
+                width: 100%;
+                display: block;
+                filter: drop-shadow(0 6px 18px rgba(16, 48, 72, 0.1));
+            }
+            .version-mark {
+                font-size: 0.42em;
+                font-weight: 700;
+                letter-spacing: 0.04em;
+                color: var(--blue);
+                vertical-align: middle;
+                margin-left: 8px;
+            }
+            .brand-subtitle {
+                font-size: 22px;
+                font-weight: 700;
+                color: var(--blue);
+                margin-bottom: 8px;
+            }
+            .privacy-line {
+                margin-top: 10px;
+                padding: 12px 14px;
+                border-radius: 12px;
+                background: #eff6ff;
+                border: 1px solid #c7dbff;
+                font-size: 13px;
+                line-height: 1.6;
+                color: var(--blue);
+            }
+            .progress-wrap {
+                margin-top: 16px;
+            }
+            .progress-bar {
+                height: 8px;
+                background: #dbe7f6;
+                border-radius: 999px;
+                overflow: hidden;
+                margin-bottom: 14px;
+            }
+            .progress-fill {
+                height: 100%;
+                width: 33%;
+                background: linear-gradient(90deg, var(--navy), var(--blue));
+                transition: width 0.2s ease;
+            }
+            .workflow {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+                margin-top: 12px;
+            }
+            .step {
+                background: #f8fafc;
+                border: 1px solid #e5e7eb;
+                border-radius: 14px;
+                padding: 16px;
+            }
+            .stepnum {
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                text-align: center;
+                border-radius: 999px;
+                background: var(--blue);
+                color: #fff;
+                font-size: 12px;
+                font-weight: bold;
+                margin-right: 8px;
+            }
+            .wizard-tabs {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+                margin-top: 12px;
+                margin-bottom: 28px;
+            }
+            .wizard-tab {
+                padding: 16px;
+                border-radius: 14px;
+                border: 1px solid #dbe3f0;
+                background: #fff;
+                cursor: pointer;
+            }
+            .wizard-tab.active {
+                background: #eef4fb;
+                border-color: #89a8d8;
+                color: var(--navy);
+            }
+            .wizard-panel {
+                display: none;
+            }
+            .wizard-panel.active {
+                display: block;
+            }
+            .qualitybox {
+                margin-top: 10px;
+                padding: 12px 14px;
+                border-radius: 12px;
+                background: #f8fafc;
+                border: 1px solid #e5e7eb;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            .qualitybox.good {
+                border-color: #a7f3d0;
+                background: #ecfdf5;
+            }
+            .qualitybox.warn {
+                border-color: #fde68a;
+                background: #fffbeb;
+            }
+            .qualitybox.bad {
+                border-color: #fecaca;
+                background: #fef2f2;
+            }
+            .history-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin-top: 10px;
+            }
+            .history-item {
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                align-items: center;
+                padding: 8px 10px;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                background: #fff;
+            }
+            .history-item b {
+                font-size: 13px;
+            }
+            .history-meta {
+                font-size: 12px;
+                color: var(--muted);
+            }
+            .step-nav {
+                display: flex;
+                justify-content: space-between;
+                gap: 12px;
+                margin-top: 18px;
+            }
+            .result-top {
+                display: grid;
+                grid-template-columns: 1.2fr 0.8fr;
+                gap: 16px;
+            }
+            .ai-grid {
+                display: grid;
+                grid-template-columns: repeat(5, minmax(120px, 1fr));
+                gap: 12px;
+                margin-top: 10px;
+            }
+            .ai-tile {
+                border: 1px solid #dbe3f0;
+                background: #fff;
+                border-radius: 16px;
+                padding: 16px 12px;
+                text-align: center;
+                cursor: pointer;
+            }
+            .ai-tile:hover {
+                box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+                border-color: #bfd2ff;
+            }
+            .ai-logo {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+                margin: 0 auto 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                font-weight: bold;
+                color: #fff;
+            }
+            .logo-chatgpt {
+                background: #10a37f;
+            }
+            .logo-claude {
+                background: #d97706;
+            }
+            .logo-gemini {
+                background: #6366f1;
+            }
+            .logo-copilot {
+                background: #2563eb;
+            }
+            .logo-perplexity {
+                background: #111827;
+            }
+            .ai-name {
+                font-size: 14px;
+                font-weight: 700;
+                color: #111827;
+            }
+            .ai-sub {
+                font-size: 12px;
+                color: var(--muted);
+                line-height: 1.35;
+                margin-top: 4px;
+            }
+            .tipbox,
+            .micro-preview {
+                padding: 12px 14px;
+                border-radius: 12px;
+                border: 1px solid #e5edf6;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            .tipbox {
+                background: #eefcf6;
+                border-color: #bbf7d0;
+            }
+            .micro-preview {
+                background: #f8fafc;
+                color: #4b5563;
+            }
+            .star-rating {
+                display: flex;
+                gap: 4px;
+            }
+            .star {
+                font-size: 32px;
+                color: #d1d5db;
+                cursor: pointer;
+            }
+            .star.hovered {
+                color: #facc15;
+            }
+            .star.selected {
+                color: #f59e0b;
+            }
+            .footer-version {
+                font-size: 11px;
+                color: #94a3b8;
+                text-align: right;
+                margin-top: 18px;
+            }
+            @media (max-width: 980px) {
+                .brand-hero {
+                    grid-template-columns: 1fr;
+                }
+                .wizard-tabs,
+                .workflow,
+                .grid,
+                .result-top,
+                .ai-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .compact-panel textarea#cv {
+                min-height: 170px;
+            }
+            .compact-panel .history-list {
+                margin-top: 6px;
+            }
+            .compact-panel .history-item {
+                padding: 7px 9px;
+            }
+            .compact-panel .helper {
+                margin-top: 4px;
+            }
+            .compact-panel h2 {
+                margin-bottom: 8px;
+            }
+
+            .wizard-tabs {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+            .wizard-tab.disabled {
+                opacity: 0.45;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+            .step1-grid {
+                display: grid;
+                grid-template-columns: 1.2fr 0.8fr;
+                gap: 20px;
+            }
+            .jd-history-panel {
+                max-height: 280px;
+                overflow: auto;
+                padding-right: 4px;
+            }
+            .history-item.compact {
+                padding: 8px 10px;
+            }
+            .history-title {
+                display: block;
+                font-size: 13px;
+                font-weight: 700;
+                line-height: 1.25;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
+            .history-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                flex-shrink: 0;
+            }
+            .history-actions button {
+                padding: 8px 12px;
+                font-size: 12px;
+                border-radius: 10px;
+            }
+            @media (max-width: 980px) {
+                .step1-grid {
+                    grid-template-columns: 1fr;
+                }
+                .jd-history-panel {
+                    max-height: none;
+                }
+            }
+
+            .wizard-note {
+                margin-top: 10px;
+                font-size: 13px;
+                color: #6b7280;
+            }
+            .wizard-tab.disabled {
+                opacity: 0.45;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+            .cta-compact {
+                padding: 14px 16px;
+                border: 1px solid #d7e2f0;
+                border-radius: 14px;
+                background: #f8fbff;
+                margin-bottom: 18px;
+            }
+            .enrich-box {
+                margin-top: 14px;
+                padding: 14px 16px;
+                border: 1px solid #e5edf6;
+                border-radius: 14px;
+                background: #fbfcfe;
+            }
+            .enrich-actions {
+                margin-top: 10px;
+            }
+            .option-checkbox {
+                font-family: inherit;
+                font-size: 14px;
+                color: inherit;
+                margin-right: 18px;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                cursor: pointer;
+            }
+            .option-checkbox input {
+                transform: scale(1.05);
+            }
+
+            .focus-item {
+                margin-bottom: 10px;
+            }
+            .focus-item label {
+                font-size: 14px;
+                color: #1f2937;
+            }
+            .focus-item .payoff {
+                display: block;
+                font-size: 11px;
+                color: #6b7280;
+                margin-left: 24px;
+                margin-top: 1px;
+                line-height: 1.35;
+            }
+            .signal-box {
+                padding: 12px 14px;
+                border: 1px solid #dbe3f0;
+                border-radius: 12px;
+                background: #f8fbff;
+            }
+            .signal-pill {
+                display: inline-block;
+                padding: 6px 10px;
+                border-radius: 999px;
+                background: #eef4fb;
+                color: #204870;
+                font-size: 12px;
+                margin: 4px 6px 0 0;
+            }
+
+            .step2-layout .grid {
+                grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+            }
+            .step2-main {
+                grid-column: span 7;
+            }
+            .step2-side {
+                grid-column: span 5;
+            }
+            .jd-history-panel {
+                max-height: 280px;
+                overflow: auto;
+                padding-right: 4px;
+            }
+            .history-item.compact {
+                padding: 8px 10px;
+            }
+            .history-title {
+                display: block;
+                font-size: 13px;
+                font-weight: 700;
+                line-height: 1.25;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
+            .history-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                flex-shrink: 0;
+            }
+            .history-actions button {
+                padding: 8px 12px;
+                font-size: 12px;
+                border-radius: 10px;
+            }
+            .wizard-tab.disabled {
+                opacity: 0.45;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+            .wizard-note {
+                margin-top: 10px;
+                font-size: 13px;
+                color: #6b7280;
+            }
+            .focus-item {
+                margin-bottom: 10px;
+            }
+            .focus-item label {
+                font-size: 14px;
+                color: #1f2937;
+            }
+            .focus-item .payoff {
+                display: block;
+                font-size: 11px;
+                color: #6b7280;
+                margin-left: 24px;
+                margin-top: 1px;
+                line-height: 1.35;
+            }
+            .cta-compact {
+                padding: 14px 16px;
+                border: 1px solid #d7e2f0;
+                border-radius: 14px;
+                background: #f8fbff;
+                margin-bottom: 18px;
+            }
+            @media (max-width: 980px) {
+                .step2-layout .grid {
+                    grid-template-columns: 1fr !important;
+                }
+                .step2-main,
+                .step2-side {
+                    grid-column: span 1;
+                }
+                .jd-history-panel {
+                    max-height: none;
+                }
+            }
+        </style>
+
+        <style>
+            .option-checkbox {
+                font-family: inherit;
+                font-size: 14px;
+                color: inherit;
+                margin-right: 18px;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                cursor: pointer;
+            }
+            .option-checkbox input {
+                transform: scale(1.05);
+            }
+
+            .wizard-note {
+                margin-top: 10px;
+                font-size: 13px;
+                color: #6b7280;
+            }
+            .wizard-tab.disabled {
+                opacity: 0.45;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+            .cta-compact {
+                padding: 14px 16px;
+                border: 1px solid #d7e2f0;
+                border-radius: 14px;
+                background: #f8fbff;
+                margin-bottom: 18px;
+            }
+            .enrich-box {
+                margin-top: 14px;
+                padding: 14px 16px;
+                border: 1px solid #e5edf6;
+                border-radius: 14px;
+                background: #fbfcfe;
+            }
+            .enrich-actions {
+                margin-top: 10px;
+            }
+            .option-checkbox {
+                font-family: inherit;
+                font-size: 14px;
+                color: inherit;
+                margin-right: 18px;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                cursor: pointer;
+            }
+            .option-checkbox input {
+                transform: scale(1.05);
+            }
+
+            .focus-item {
+                margin-bottom: 10px;
+            }
+            .focus-item label {
+                font-size: 14px;
+                color: #1f2937;
+            }
+            .focus-item .payoff {
+                display: block;
+                font-size: 11px;
+                color: #6b7280;
+                margin-left: 24px;
+                margin-top: 1px;
+                line-height: 1.35;
+            }
+            .signal-box {
+                padding: 12px 14px;
+                border: 1px solid #dbe3f0;
+                border-radius: 12px;
+                background: #f8fbff;
+            }
+            .signal-pill {
+                display: inline-block;
+                padding: 6px 10px;
+                border-radius: 999px;
+                background: #eef4fb;
+                color: #204870;
+                font-size: 12px;
+                margin: 4px 6px 0 0;
+            }
+
+            .step2-layout .grid {
+                grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+            }
+            .step2-main {
+                grid-column: span 7;
+            }
+            .step2-side {
+                grid-column: span 5;
+            }
+            .jd-history-panel {
+                max-height: 280px;
+                overflow: auto;
+                padding-right: 4px;
+            }
+            .history-item.compact {
+                padding: 8px 10px;
+            }
+            .history-title {
+                display: block;
+                font-size: 13px;
+                font-weight: 700;
+                line-height: 1.25;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
+            .history-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                flex-shrink: 0;
+            }
+            .history-actions button {
+                padding: 8px 12px;
+                font-size: 12px;
+                border-radius: 10px;
+            }
+            .wizard-tab.disabled {
+                opacity: 0.45;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+            .wizard-note {
+                margin-top: 10px;
+                font-size: 13px;
+                color: #6b7280;
+            }
+            .focus-item {
+                margin-bottom: 10px;
+            }
+            .focus-item label {
+                font-size: 14px;
+                color: #1f2937;
+            }
+            .focus-item .payoff {
+                display: block;
+                font-size: 11px;
+                color: #6b7280;
+                margin-left: 24px;
+                margin-top: 1px;
+                line-height: 1.35;
+            }
+            .cta-compact {
+                padding: 14px 16px;
+                border: 1px solid #d7e2f0;
+                border-radius: 14px;
+                background: #f8fbff;
+                margin-bottom: 18px;
+            }
+            @media (max-width: 980px) {
+                .step2-layout .grid {
+                    grid-template-columns: 1fr !important;
+                }
+                .step2-main,
+                .step2-side {
+                    grid-column: span 1;
+                }
+                .jd-history-panel {
+                    max-height: none;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <div class="card">
+                <div class="brand-hero">
+                    <div class="brand-visual">
+                        <img
+                            src="JobFit%20Jockey%20visual.png"
+                            alt="JobFit Jockey logo"
+                        />
+                    </div>
+                    <div>
+                        <h1>
+                            JobFit Jockey <span class="version-mark">v2</span>
+                        </h1>
+                        <div class="brand-subtitle">
+                            Executive Job Match Advisor
+                        </div>
+                        <p>
+                            Turn any job description and CV into a high-quality
+                            job match analysis prompt — for candidates,
+                            recruiters, and career advisors.
+                        </p>
+                        <div class="privacy-line">
+                            We value your privacy. Your data stays in your
+                            browser.<br />Nothing is stored on this site -
+                            except for your feedback we're happy to receive at
+                            the end of the process.
+                        </div>
+                        <div class="progress-wrap">
+                            <div class="progress-bar">
+                                <div
+                                    class="progress-fill"
+                                    id="progressFill"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="workflow">
+                    <div class="step">
+                        <div><span class="stepnum">1</span><b>Target</b></div>
+                        <div class="helper">
+                            Add a JD URL or paste the job description.
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div><span class="stepnum">2</span><b>Profile</b></div>
+                        <div class="helper">
+                            Paste your CV or upload PDF, DOCX, or TXT.
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div><span class="stepnum">3</span><b>Goal</b></div>
+                        <div class="helper">
+                            Choose focus areas, culture lens, and output style.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="wizard-tabs">
+                    <div
+                        class="wizard-tab active"
+                        onclick="showStep(1)"
+                        id="tab1"
+                    >
+                        <b>1. Target</b>
+                        <div class="helper">JD URL / JD text</div>
+                    </div>
+                    <div class="wizard-tab" onclick="goToStep2()" id="tab2">
+                        <b>2. Profile</b>
+                        <div class="helper">CV + privacy options</div>
+                    </div>
+                    <div class="wizard-tab" onclick="goToStep3()" id="tab3">
+                        <b>3. Goal</b>
+                        <div class="helper">Focus areas</div>
+                    </div>
+                    <div
+                        class="wizard-tab disabled"
+                        onclick="showStep(4)"
+                        id="tab4"
+                        title="Complete steps 1–3 first"
+                    >
+                        <b>Result</b>
+                        <div class="helper">Prompt + launch</div>
+                    </div>
+                </div>
+                <div class="wizard-note" id="wizardNote">
+                    Result unlocks after you complete steps 1–3 and create the
+                    analysis.
+                </div>
+
+                <div class="wizard-panel active" id="step1">
+                    <div class="step1-grid">
+                        <div>
+                            <h2>Job Description URL (optional)</h2>
+                            <input
+                                id="jobURL"
+                                type="text"
+                                placeholder="Paste a job URL here"
+                            />
+                            <div class="row" style="margin-top: 14px">
+                                <button onclick="scrapeJD()">Fetch JD</button>
+                                <button class="secondary" onclick="clearJD()">
+                                    Clear JD
+                                </button>
+                            </div>
+                            <div class="status" id="scrapeStatus">
+                                Best-effort page fetch. LinkedIn and some
+                                corporate sites may block browser access and
+                                require manual copy/paste.
+                            </div>
+                            <div
+                                id="scrapeQuality"
+                                class="qualitybox hidden"
+                            ></div>
+                        </div>
+                        <div>
+                            <h2>Reuse a recent JD</h2>
+                            <div class="helper">Load a previously used JD.</div>
+                            <div class="jd-history-panel">
+                                <div
+                                    class="history-list"
+                                    id="jdHistoryList"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="full" style="margin-top: 22px">
+                        <h2>Or paste the JD manually</h2>
+                        <textarea
+                            id="jd"
+                            placeholder="Paste the full job description here if fetching does not work."
+                        ></textarea>
+                        <div class="helper">
+                            Manual fallback: paste the job description here if
+                            needed.
+                        </div>
+                    </div>
+                    <div class="full">
+                        <div class="step-nav">
+                            <div></div>
+                            <button onclick="goToStep2()">Next step</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wizard-panel step2-layout" id="step2">
+                    <div class="grid">
+                        <div class="step2-main">
+                            <h2>Candidate CV</h2>
+                            <textarea
+                                id="cv"
+                                placeholder="Paste CV text here, or upload a PDF / DOCX / TXT file below."
+                            ></textarea>
+                            <input
+                                id="cvFile"
+                                type="file"
+                                accept=".pdf,.docx,.txt"
+                            />
+                            <div class="status" id="cvStatus">
+                                Awaiting CV input.
+                            </div>
+                            <div class="helper">
+                                PDF extraction works for text-based PDFs.
+                            </div>
+                        </div>
+                        <div class="step2-side">
+                            <h2>Recent CVs</h2>
+                            <div class="helper">Reload a previous CV.</div>
+                            <div class="jd-history-panel">
+                                <div
+                                    class="history-list"
+                                    id="cvHistoryList"
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="full">
+                            <h2>Privacy & Anonymization</h2>
+                            <label
+                                ><input
+                                    type="checkbox"
+                                    id="anonymizeData"
+                                    checked
+                                />
+                                Anonymize obvious personal data before
+                                generating prompt</label
+                            >
+                            <div class="helper">
+                                This replaces clear identifiers such as full
+                                name, emails, phone numbers, URLs, and LinkedIn
+                                profile links.
+                            </div>
+                            <div class="row">
+                                <button
+                                    class="secondary"
+                                    onclick="previewRedaction()"
+                                >
+                                    Preview anonymized CV
+                                </button>
+                            </div>
+                            <textarea
+                                id="redactionPreview"
+                                class="smalltext"
+                                placeholder="Anonymized CV preview appears here."
+                            ></textarea>
+                        </div>
+                        <div class="full">
+                            <div class="step-nav">
+                                <button class="secondary" onclick="showStep(1)">
+                                    Back</button
+                                ><button onclick="goToStep3()">
+                                    Next step
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wizard-panel" id="step3">
+                    <div class="cta-compact">
+                        <div
+                            class="row"
+                            style="
+                                justify-content: space-between;
+                                align-items: center;
+                            "
+                        >
+                            <div>
+                                <h2 style="margin: 0 0 6px 0">
+                                    Ready to create your analysis?
+                                </h2>
+                                <div class="helper">
+                                    Once your goal settings look right, create
+                                    the result and continue to the Result tab.
+                                </div>
+                            </div>
+                            <button
+                                class="primary-cta"
+                                onclick="generatePrompt()"
+                            >
+                                Create My Job Match Analysis
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div>
+                            <h2>Prompt tuning (optional)</h2>
+                            <select id="aiTarget">
+                                <option value="generic">Generic</option>
+                                <option value="chatgpt">ChatGPT</option>
+                                <option value="claude">Claude</option>
+                                <option value="gemini">Gemini</option>
+                                <option value="copilot">Copilot</option>
+                                <option value="perplexity">Perplexity</option>
+                            </select>
+                            <div class="helper">
+                                The analytical framework stays the same. Only
+                                light wording adjustments are made for each
+                                assistant.
+                            </div>
+                        </div>
+                        <div>
+                            <h2>Focus areas</h2>
+                            <div class="focus-item">
+                                <label
+                                    ><input
+                                        type="checkbox"
+                                        id="focusCV"
+                                        checked
+                                    />
+                                    CV optimization</label
+                                >
+                                <span class="payoff"
+                                    >Sharpen profile summary, bullets, and
+                                    positioning for this exact role.</span
+                                >
+                            </div>
+                            <div class="focus-item">
+                                <label
+                                    ><input
+                                        type="checkbox"
+                                        id="focusATS"
+                                        checked
+                                    />
+                                    ATS keyword gaps</label
+                                >
+                                <span class="payoff"
+                                    >Find keyword gaps that ATS filters or
+                                    recruiter searches may block.</span
+                                >
+                            </div>
+                            <div class="focus-item">
+                                <label
+                                    ><input
+                                        type="checkbox"
+                                        id="focusStrategy"
+                                        checked
+                                    />
+                                    Application strategy</label
+                                >
+                                <span class="payoff"
+                                    >Clarify whether to apply directly, network
+                                    first, or reposition.</span
+                                >
+                            </div>
+                            <div class="focus-item">
+                                <label
+                                    ><input
+                                        type="checkbox"
+                                        id="focusExecutive"
+                                        checked
+                                    />
+                                    Executive summary</label
+                                >
+                                <span class="payoff"
+                                    >Get a crisp go / no-go recommendation and
+                                    main decision risk.</span
+                                >
+                            </div>
+                            <div class="focus-item">
+                                <label
+                                    ><input
+                                        type="checkbox"
+                                        id="focusOutreach"
+                                        checked
+                                    />
+                                    Recruiter / Hiring Manager Outreach
+                                    Draft</label
+                                >
+                                <span class="payoff"
+                                    >Generate a concise outreach message if
+                                    contact hints appear in the JD or are
+                                    implied.</span
+                                >
+                            </div>
+                            <div class="focus-item">
+                                <label
+                                    ><input
+                                        type="checkbox"
+                                        id="focusCoverLetter"
+                                    />
+                                    Cover Letter Opening Draft</label
+                                >
+                                <span class="payoff"
+                                    >Generate a concise 3-paragraph opening
+                                    tailored to the role’s hidden intent.</span
+                                >
+                            </div>
+                            <div class="focus-item">
+                                <label
+                                    ><input
+                                        type="checkbox"
+                                        id="focusCompensation"
+                                        checked
+                                    />
+                                    Compensation positioning</label
+                                >
+                                <span class="payoff"
+                                    >Assess salary/package context and how to
+                                    position expectations if the role moves
+                                    forward.</span
+                                >
+                            </div>
+                            <div class="focus-item">
+                                <label
+                                    ><input type="checkbox" id="focusMarket" />
+                                    Market / company context analysis</label
+                                >
+                                <span class="payoff"
+                                    >Add company/news/salary context when
+                                    relevant.</span
+                                >
+                            </div>
+                        </div>
+                        <div>
+                            <h2>Organizational culture</h2>
+                            <select id="orgCulture">
+                                <option value="not-specified">
+                                    Not specified / infer if possible
+                                </option>
+                                <option value="scrappy-startup">
+                                    Scrappy Startup
+                                </option>
+                                <option value="conservative-corporate">
+                                    Conservative Corporate
+                                </option>
+                                <option value="big-tech">Big Tech</option>
+                                <option value="non-profit">Non-Profit</option>
+                                <option value="public-sector">
+                                    Public Sector
+                                </option>
+                                <option value="industrial-enterprise">
+                                    Industrial Enterprise
+                                </option>
+                            </select>
+                            <div class="helper">
+                                Adds a culture-fit lens so the AI assesses not
+                                only skills, but likely executive fit with the
+                                organization style.
+                            </div>
+                        </div>
+                        <div>
+                            <h2>Output style</h2>
+                            <select id="outputStyle">
+                                <option value="pdf-report">
+                                    Polished report suitable for
+                                    saving/exporting as PDF
+                                </option>
+                                <option value="chat-report">
+                                    Structured chat-style report
+                                </option>
+                                <option value="one-page">
+                                    Compressed one-page briefing
+                                </option>
+                            </select>
+                            <div class="helper">
+                                Choose how structured and compact the final
+                                output should be.
+                            </div>
+                        </div>
+                        <div class="full">
+                            <h2>Optional context for your AI</h2>
+                            <textarea
+                                id="marketContext"
+                                class="smalltext"
+                                placeholder="Optional: add anything you think is missing, such as company values, recent news, salary benchmarks, internal context, recruiter feedback, or role nuances."
+                            ></textarea>
+                            <div class="helper">
+                                Optional free-text context. If the
+                                market/company context focus is selected, the AI
+                                will automatically create a short market/company
+                                context section using the JD plus this
+                                additional input when helpful.
+                            </div>
+                        </div>
+                        <div class="full">
+                            <div class="result-card-soft">
+                                <h2>Create your analysis</h2>
+                                <div class="helper">
+                                    Once steps 1 to 3 are complete, create the
+                                    result and continue to the Result tab.
+                                </div>
+                                <div class="row" style="margin-top: 12px">
+                                    <button
+                                        class="primary-cta"
+                                        onclick="generatePrompt()"
+                                    >
+                                        Create My Job Match Analysis
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wizard-panel" id="step4">
+                    <div class="result-top">
+                        <div>
+                            <h2>Paste your prompt into your preferred AI</h2>
+                            <div class="helper">
+                                Click any AI below. The prompt is copied
+                                automatically, then the site opens in a new tab.
+                            </div>
+                            <div class="ai-grid">
+                                <div
+                                    class="ai-tile"
+                                    onclick="openAI('chatgpt')"
+                                >
+                                    <div class="ai-logo logo-chatgpt">◎</div>
+                                    <div class="ai-name">ChatGPT</div>
+                                    <div class="ai-sub">
+                                        Open ChatGPT (Prompt copied)
+                                    </div>
+                                </div>
+                                <div class="ai-tile" onclick="openAI('claude')">
+                                    <div class="ai-logo logo-claude">C</div>
+                                    <div class="ai-name">Claude</div>
+                                    <div class="ai-sub">
+                                        Open Claude (Prompt copied)
+                                    </div>
+                                </div>
+                                <div class="ai-tile" onclick="openAI('gemini')">
+                                    <div class="ai-logo logo-gemini">✦</div>
+                                    <div class="ai-name">Gemini</div>
+                                    <div class="ai-sub">
+                                        Open Gemini (Prompt copied)
+                                    </div>
+                                </div>
+                                <div
+                                    class="ai-tile"
+                                    onclick="openAI('copilot')"
+                                >
+                                    <div class="ai-logo logo-copilot">∞</div>
+                                    <div class="ai-name">Copilot</div>
+                                    <div class="ai-sub">
+                                        Open Copilot (Prompt copied)
+                                    </div>
+                                </div>
+                                <div
+                                    class="ai-tile"
+                                    onclick="openAI('perplexity')"
+                                >
+                                    <div class="ai-logo logo-perplexity">P</div>
+                                    <div class="ai-name">Perplexity</div>
+                                    <div class="ai-sub">
+                                        Open Perplexity (Prompt copied)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="align-items: stretch">
+                            <div class="tipbox" style="flex: 1">
+                                <b>Tip:</b> Try running the same prompt in two
+                                different AI assistants. Different models often
+                                surface different insights.
+                            </div>
+                            <div class="micro-preview" style="flex: 1">
+                                <b>What you’ll get</b><br />Executive Summary ·
+                                Competency Heatmap · ATS Gaps · CV Optimization
+                                Tips · Practical Application Advice
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 style="margin-top: 22px">Job Match Analysis Prompt</h2>
+                    <div class="row">
+                        <button class="secondary" onclick="copyPrompt()">
+                            Copy Prompt
+                        </button>
+                        <button class="secondary" onclick="downloadPrompt()">
+                            Download Prompt
+                        </button>
+                    </div>
+                    <div class="row" style="margin-top: 12px">
+                        <label class="option-checkbox"
+                            ><input type="checkbox" id="optSalary" checked />
+                            Add Salary Context</label
+                        >
+                        <label class="option-checkbox"
+                            ><input type="checkbox" id="optCulture" checked />
+                            Emphasize Culture Fit</label
+                        >
+                        <label class="option-checkbox"
+                            ><input type="checkbox" id="optOutreach" checked />
+                            Outreach Email Draft</label
+                        >
+                    </div>
+                    <div class="helper">
+                        These buttons append targeted instructions to the
+                        current prompt, so you can generate tailored follow-ups
+                        without rebuilding everything.
+                    </div>
+                    <textarea
+                        id="promptOutput"
+                        class="promptbox"
+                        placeholder="Your AI-ready prompt will appear here."
+                    ></textarea>
+                    <div class="status" id="promptStatus">
+                        This version asks the AI to act like an executive
+                        job-match and application advisor, not just a role-fit
+                        scorer.
+                    </div>
+
+                    <h2 style="margin-top: 22px">Give feedback</h2>
+                    <div class="helper">
+                        Your feedback is submitted to help improve this tool.
+                        Rate your experience and leave a comment.
+                    </div>
+                    <form id="feedbackForm" method="POST" name="feedback">
+                        <input
+                            type="hidden"
+                            name="form-name"
+                            value="feedback"
+                        />
+                        <p style="display: none">
+                            <label
+                                >Don't fill this: <input name="bot-field"
+                            /></label>
+                        </p>
+                        <div class="star-rating" style="margin-top: 8px">
+                            <input
+                                type="hidden"
+                                name="rating"
+                                id="feedbackRating"
+                                value="0"
+                            />
+                            <span class="star" data-value="1">★</span>
+                            <span class="star" data-value="2">★</span>
+                            <span class="star" data-value="3">★</span>
+                            <span class="star" data-value="4">★</span>
+                            <span class="star" data-value="5">★</span>
+                        </div>
+                        <textarea
+                            id="feedbackText"
+                            name="comment"
+                            class="smalltext"
+                            placeholder="What worked well? What should change next?"
+                            style="margin-top: 10px"
+                        ></textarea>
+                        <div class="row" style="margin-top: 10px">
+                            <button type="submit">Submit feedback</button>
+                        </div>
+                    </form>
+                    <div class="status" id="feedbackStatus"></div>
+                </div>
+            </div>
+
+            <div class="footer-version">
+                <a
+                    href="https://www.linkedin.com/in/thierrydelbaere/"
+                    target="_blank"
+                    style="
+                        margin-right: 10px;
+                        text-decoration: none;
+                        color: inherit;
+                    "
+                    >Designed by Thierry Delbaere</a
+                >
+                · Internal version: v205b
+            </div>
+        </div>
+
+        <form name="feedback" netlify netlify-honeypot="bot-field" hidden>
+            <input type="text" name="rating" />
+            <textarea name="comment"></textarea>
+        </form>
+
+        <script>
+            pdfjsLib.GlobalWorkerOptions.workerSrc =
+                "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
+            function showStep(n) {
+                const tab4 = document.getElementById("tab4");
+                const note = document.getElementById("wizardNote");
+                if (n === 4 && tab4 && tab4.classList.contains("disabled")) {
+                    if (note)
+                        note.textContent =
+                            "Result unlocks after you complete steps 1–3 and create the analysis.";
+                    return;
+                }
+                [1, 2, 3, 4].forEach((i) => {
+                    const panel = document.getElementById("step" + i);
+                    const tab = document.getElementById("tab" + i);
+                    if (panel) panel.classList.toggle("active", i === n);
+                    if (tab) tab.classList.toggle("active", i === n);
+                });
+                const fill = document.getElementById("progressFill");
+                if (fill)
+                    fill.style.width =
+                        { 1: "25%", 2: "50%", 3: "75%", 4: "100%" }[n] || "25%";
+                if (note)
+                    note.textContent =
+                        n < 4
+                            ? "Result unlocks after you complete steps 1–3 and create the analysis."
+                            : "Your result is ready. You can now copy, download, or launch it in your preferred AI.";
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+            function goToStep2() {
+                const jd = cleanText(document.getElementById("jd").value, 50);
+                const url = cleanText(
+                    document.getElementById("jobURL").value,
+                    50,
+                );
+                if (!jd && !url) {
+                    const ok = window.confirm(
+                        "No JD detected yet. Continue anyway?",
+                    );
+                    if (!ok) return;
+                }
+                showStep(2);
+            }
+
+            function goToStep3() {
+                const cv = cleanText(document.getElementById("cv").value, 50);
+                if (!cv) {
+                    const ok = window.confirm(
+                        "No CV detected yet. Continue anyway?",
+                    );
+                    if (!ok) return;
+                }
+                showStep(3);
+            }
+
+            function goToStep2() {
+                const jd = cleanText(document.getElementById("jd").value, 50);
+                const url = cleanText(
+                    document.getElementById("jobURL").value,
+                    50,
+                );
+                if (!jd && !url) {
+                    const ok = window.confirm(
+                        "No JD detected yet. Continue anyway?",
+                    );
+                    if (!ok) return;
+                }
+                showStep(2);
+            }
+
+            function goToStep3() {
+                const cv = cleanText(document.getElementById("cv").value, 50);
+                if (!cv) {
+                    const ok = window.confirm(
+                        "No CV detected yet. Continue anyway?",
+                    );
+                    if (!ok) return;
+                }
+                showStep(3);
+            }
+
+            function cleanText(text, maxLen) {
+                if (!text) return "";
+                let t = text
+                    .replace(/\u0000/g, " ")
+                    .replace(/\s+/g, " ")
+                    .trim();
+                return maxLen && t.length > maxLen ? t.substring(0, maxLen) : t;
+            }
+            function setStatus(id, msg, cls = "") {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.textContent = msg;
+                el.className = "status " + cls;
+            }
+            function setQualityBox(result) {
+                const box = document.getElementById("scrapeQuality");
+                if (!box) return;
+                if (!result) {
+                    box.classList.add("hidden");
+                    box.innerHTML = "";
+                    return;
+                }
+                box.classList.remove("hidden");
+                box.className = "qualitybox " + result.level;
+                let html =
+                    "<b>Scrape quality: " +
+                    result.label +
+                    "</b><br>Confidence score: <b>" +
+                    result.score +
+                    "/100</b><br>";
+                if (result.reasons && result.reasons.length) {
+                    html += "<ul>";
+                    result.reasons.forEach(
+                        (r) => (html += "<li>" + escapeHtml(r) + "</li>"),
+                    );
+                    html += "</ul>";
+                }
+                if (result.recommendation)
+                    html +=
+                        "<div><b>Recommendation:</b> " +
+                        escapeHtml(result.recommendation) +
+                        "</div>";
+                box.innerHTML = html;
+            }
+            function clearJD() {
+                document.getElementById("jd").value = "";
+                setStatus("scrapeStatus", "JD cleared.");
+                setQualityBox(null);
+            }
+            async function tryFetchText(url) {
+                const endpoints = [
+                    url,
+                    "https://api.allorigins.win/raw?url=" +
+                        encodeURIComponent(url),
+                    "https://r.jina.ai/http://" +
+                        url.replace(/^https?:\/\//, ""),
+                ];
+                let lastErr = "Unknown error";
+                for (const ep of endpoints) {
+                    try {
+                        const res = await fetch(ep);
+                        if (!res.ok) throw new Error("HTTP " + res.status);
+                        const text = await res.text();
+                        if (text && text.length > 200) return text;
+                    } catch (e) {
+                        lastErr = e.message || String(e);
+                    }
+                }
+                throw new Error(lastErr);
+            }
+            function extractVisibleTextFromHTML(html) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                doc.querySelectorAll(
+                    "script, style, noscript, svg, img, nav, footer, header, aside, form",
+                ).forEach((el) => el.remove());
+                let title = (
+                    doc.querySelector("title")?.textContent || ""
+                ).trim();
+                let jsonLdText = "";
+                Array.from(
+                    doc.querySelectorAll('script[type="application/ld+json"]'),
+                ).forEach((s) => {
+                    try {
+                        const raw = s.textContent || "";
+                        if (raw.includes("JobPosting")) jsonLdText += " " + raw;
+                    } catch (e) {}
+                });
+                let text =
+                    doc.body && (doc.body.innerText || doc.body.textContent)
+                        ? doc.body.innerText || doc.body.textContent
+                        : "";
+                text = cleanText(text, 16000);
+                if (text.length > 10000) text = text.substring(0, 10000);
+                return { title, text, jsonLdText: cleanText(jsonLdText, 4000) };
+            }
+            function countOccurrences(text, terms) {
+                const lower = (text || "").toLowerCase();
+                let count = 0;
+                for (const t of terms) {
+                    const re = new RegExp(
+                        t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+                        "gi",
+                    );
+                    const m = lower.match(re);
+                    count += m ? m.length : 0;
+                }
+                return count;
+            }
+            function assessScrapeQuality(url, title, text, jsonLdText) {
+                const genericTitles = [
+                    "jobs",
+                    "careers",
+                    "job search",
+                    "join us",
+                    "vacancies",
+                ];
+                const navTerms = [
+                    "insights",
+                    "industries",
+                    "services",
+                    "about us",
+                    "learn more",
+                    "press releases",
+                    "social media",
+                    "client stories",
+                    "events",
+                    "contact us",
+                    "our office",
+                    "campus activities",
+                    "recruitment process",
+                    "students and graduates",
+                    "experienced professionals",
+                    "news",
+                    "hot topics",
+                    "research library",
+                    "expert perspectives",
+                    "who we are",
+                    "what we do",
+                    "our brands",
+                    "management and governance",
+                ];
+                const jdTerms = [
+                    "responsibilities",
+                    "requirements",
+                    "qualifications",
+                    "your profile",
+                    "what you'll do",
+                    "what we offer",
+                    "what you will do",
+                    "skills",
+                    "experience",
+                    "location",
+                    "contract",
+                    "apply now",
+                    "job description",
+                    "about the role",
+                    "role overview",
+                    "must have",
+                    "nice to have",
+                    "preferred qualifications",
+                    "benefits",
+                ];
+                const reasons = [];
+                let score = 100;
+                const lowerTitle = (title || "").toLowerCase().trim();
+                const navCount = countOccurrences(text, navTerms);
+                const jdCount = countOccurrences(text, jdTerms);
+                const textLen = (text || "").length;
+                const hasJobPostingSchema = (jsonLdText || "")
+                    .toLowerCase()
+                    .includes("jobposting");
+                if (!title || genericTitles.includes(lowerTitle)) {
+                    score -= 20;
+                    reasons.push(
+                        "The page title looks generic rather than job-specific.",
+                    );
+                }
+                if (textLen < 300) {
+                    score -= 40;
+                    reasons.push("Very little text was extracted.");
+                }
+                if (navCount >= 12) {
+                    score -= 35;
+                    reasons.push(
+                        "The extracted page contains a high amount of navigation or site-wrapper content.",
+                    );
+                } else if (navCount >= 6) {
+                    score -= 20;
+                    reasons.push(
+                        "The extracted page contains substantial navigation or non-job content.",
+                    );
+                }
+                if (jdCount <= 2) {
+                    score -= 25;
+                    reasons.push(
+                        "Very few job-description markers were detected.",
+                    );
+                } else if (jdCount <= 5) {
+                    score -= 10;
+                    reasons.push(
+                        "The page contains only limited job-description markers.",
+                    );
+                }
+                if (hasJobPostingSchema) {
+                    score += 10;
+                    reasons.push(
+                        "Structured JobPosting metadata was detected.",
+                    );
+                }
+                const urlLower = (url || "").toLowerCase();
+                [
+                    "linkedin.com",
+                    "workday",
+                    "successfactors",
+                    "oraclecloud",
+                    "taleo",
+                    "capgemini.com",
+                ].forEach((d) => {
+                    if (urlLower.includes(d) && score > 55) score -= 5;
+                });
+                score = Math.max(0, Math.min(100, score));
+                let level = "good",
+                    label = "Good",
+                    recommendation =
+                        "You can probably use this scrape as-is, but still review it quickly for noise.";
+                if (score < 75) {
+                    level = "warn";
+                    label = "Medium";
+                    recommendation =
+                        "Review the extracted text carefully before using it.";
+                }
+                if (score < 50) {
+                    level = "bad";
+                    label = "Low";
+                    recommendation =
+                        "This page likely exposes wrapper or navigation content rather than the real job description. Paste the JD manually instead.";
+                }
+                return { score, level, label, reasons, recommendation };
+            }
+            async function scrapeJD() {
+                const url = document.getElementById("jobURL").value.trim();
+                if (!url) {
+                    setStatus(
+                        "scrapeStatus",
+                        "Please enter a URL first.",
+                        "warn",
+                    );
+                    setQualityBox(null);
+                    return;
+                }
+                setStatus("scrapeStatus", "Scraping job description...");
+                setQualityBox(null);
+                try {
+                    const html = await tryFetchText(url);
+                    const extracted = extractVisibleTextFromHTML(html);
+                    const quality = assessScrapeQuality(
+                        url,
+                        extracted.title,
+                        extracted.text,
+                        extracted.jsonLdText,
+                    );
+                    document.getElementById("jd").value = extracted.text || "";
+                    setQualityBox(quality);
+                    if (quality.level === "bad")
+                        setStatus(
+                            "scrapeStatus",
+                            "This site likely blocks or obscures the real job content. Please paste the JD manually.",
+                            "bad",
+                        );
+                    else if (quality.level === "warn")
+                        setStatus(
+                            "scrapeStatus",
+                            "JD extracted with medium confidence. Please review the text before using it.",
+                            "warn",
+                        );
+                    else
+                        setStatus(
+                            "scrapeStatus",
+                            "JD extracted successfully (" +
+                                (extracted.text || "").length +
+                                " characters).",
+                            "ok",
+                        );
+                } catch (e) {
+                    setStatus(
+                        "scrapeStatus",
+                        "This site likely blocks scraping. Please paste the JD manually. Details: " +
+                            (e.message || e),
+                        "bad",
+                    );
+                    setQualityBox({
+                        score: 0,
+                        level: "bad",
+                        label: "Failed",
+                        reasons: [
+                            "The page could not be fetched reliably through the available browser-safe methods.",
+                        ],
+                        recommendation: "Paste the JD manually instead.",
+                    });
+                }
+            }
+
+            async function extractPdfText(file) {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer })
+                    .promise;
+                let fullText = "";
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const content = await page.getTextContent();
+                    fullText +=
+                        content.items.map((item) => item.str).join(" ") + "\n";
+                }
+                return cleanText(fullText, 12000);
+            }
+            async function extractDocxText(file) {
+                const arrayBuffer = await file.arrayBuffer();
+                const result = await mammoth.extractRawText({ arrayBuffer });
+                return cleanText(result.value, 12000);
+            }
+            document
+                .getElementById("cvFile")
+                .addEventListener("change", async function (event) {
+                    const file = event.target.files && event.target.files[0];
+                    if (!file) return;
+                    setStatus("cvStatus", "Reading " + file.name + "...");
+                    try {
+                        let text = "",
+                            name = file.name.toLowerCase();
+                        if (name.endsWith(".pdf"))
+                            text = await extractPdfText(file);
+                        else if (name.endsWith(".docx"))
+                            text = await extractDocxText(file);
+                        else if (name.endsWith(".txt"))
+                            text = cleanText(await file.text(), 12000);
+                        else
+                            throw new Error(
+                                "Unsupported file type. Use PDF, DOCX, or TXT.",
+                            );
+                        if (!text || text.length < 60)
+                            throw new Error(
+                                "Very little text was extracted from the file.",
+                            );
+                        document.getElementById("cv").value = text;
+                        window.lastCVUploadName = file.name;
+                        setStatus(
+                            "cvStatus",
+                            "CV extracted successfully from " +
+                                file.name +
+                                " (" +
+                                text.length +
+                                " characters).",
+                            "ok",
+                        );
+                    } catch (err) {
+                        setStatus(
+                            "cvStatus",
+                            "CV parsing failed: " +
+                                err.message +
+                                " Please paste CV text manually.",
+                            "bad",
+                        );
+                    }
+                });
+
+            function anonymizeCVText(text) {
+                let t = text || "";
+                t = t.replace(
+                    /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,
+                    "[EMAIL]",
+                );
+                t = t.replace(/(\+?\d[\d\s()./-]{7,}\d)/g, "[PHONE]");
+                t = t.replace(/https?:\/\/\S+/gi, "[URL]");
+                t = t.replace(/linkedin\.com\/in\/\S+/gi, "[PROFILE_LINK]");
+                const head = t.slice(0, 250),
+                    tail = t.slice(250);
+                const redactedHead = head.replace(
+                    /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})\b/g,
+                    (m) => {
+                        const ignore = [
+                            "Work Experience",
+                            "Professional Experience",
+                            "Education",
+                            "Skills",
+                            "Languages",
+                            "Certifications",
+                            "Summary",
+                            "Profile",
+                            "Experience",
+                            "Employment History",
+                            "Curriculum Vitae",
+                            "Resume",
+                        ];
+                        return ignore.includes(m) ? m : "[NAME]";
+                    },
+                );
+                return redactedHead + tail;
+            }
+
+            function anonymizeJDText(text) {
+                let t = text || "";
+                t = t.replace(/https?:\/\/\S+/gi, "[URL]");
+                return t;
+            }
+            function previewRedaction() {
+                const cv = document.getElementById("cv").value;
+                document.getElementById("redactionPreview").value = cleanText(
+                    anonymizeCVText(cv),
+                    5000,
+                );
+            }
+            function aiSpecificNote(ai) {
+                if (ai === "chatgpt")
+                    return "This prompt is lightly tuned for ChatGPT. Be decisive, structured, and practical.";
+                if (ai === "claude")
+                    return "This prompt is lightly tuned for Claude. Keep the report elegant, concise, and high-signal.";
+                if (ai === "gemini")
+                    return "This prompt is lightly tuned for Gemini. Keep the structure tight, decision-oriented, and directly useful.";
+                if (ai === "copilot")
+                    return "This prompt is lightly tuned for Microsoft Copilot. Return a polished report in normal chat formatting.";
+                if (ai === "perplexity")
+                    return "This prompt is lightly tuned for Perplexity. Focus on practical decision-making and ATS relevance.";
+                return "This prompt is AI-agnostic. Follow the output and formatting rules strictly.";
+            }
+            function buildFocusText() {
+                const items = [];
+                if (document.getElementById("focusCV")?.checked)
+                    items.push(
+                        "CV optimization, profile summary tips, and bullet rewrites",
+                    );
+                if (document.getElementById("focusATS")?.checked)
+                    items.push(
+                        "ATS keywords, keyword gaps, and searchability guidance",
+                    );
+                if (document.getElementById("focusStrategy")?.checked)
+                    items.push(
+                        "Practical application strategy, networking, and interview focus",
+                    );
+                if (document.getElementById("focusExecutive")?.checked)
+                    items.push(
+                        "Executive decision summary and go/no-go recommendation",
+                    );
+                if (document.getElementById("focusCoverLetter")?.checked)
+                    items.push("Cover letter opening draft");
+                if (document.getElementById("focusCompensation")?.checked)
+                    items.push("Compensation positioning");
+                if (document.getElementById("focusOutreach")?.checked)
+                    items.push("Recruiter / hiring manager outreach draft");
+                if (document.getElementById("focusMarket")?.checked)
+                    items.push("Market / company context analysis");
+                return items.length
+                    ? items.join("; ")
+                    : "Balanced analysis across role fit, ATS, CV optimization, and application strategy";
+            }
+            function cultureText(val) {
+                const map = {
+                    "not-specified":
+                        "Infer cultural alignment where possible from the JD and company context.",
+                    "scrappy-startup":
+                        "Assess fit for a fast-moving, ambiguous, hands-on startup culture.",
+                    "conservative-corporate":
+                        "Assess fit for a formal, risk-aware, process-heavy corporate culture.",
+                    "big-tech":
+                        "Assess fit for a high-performance, product-driven, data-oriented tech culture.",
+                    "non-profit":
+                        "Assess fit for a mission-driven, stakeholder-sensitive non-profit culture.",
+                    "public-sector":
+                        "Assess fit for a governance-heavy, process-aware public sector culture.",
+                    "industrial-enterprise":
+                        "Assess fit for a large industrial enterprise with matrix complexity and operational discipline.",
+                };
+                return map[val] || map["not-specified"];
+            }
+            function outputStyleText(style) {
+                if (style === "one-page")
+                    return "Produce a compact one-page style executive briefing with tight sections and minimal filler.";
+                if (style === "chat-report")
+                    return "Produce a structured chat-style report with clean headings, short paragraphs, and only minimal bullets.";
+                return "Produce a polished report suitable for saving or exporting as PDF, with clean headings, balanced spacing, and professional formatting.";
+            }
+            function buildPrompt(jd, cv, ai) {
+                const focus = buildFocusText();
+                const outputStyleEl = document.getElementById("outputStyle");
+                const style = outputStyleText(
+                    outputStyleEl ? outputStyleEl.value : "pdf-report",
+                );
+                const culture = cultureText(
+                    document.getElementById("orgCulture").value,
+                );
+                const market = cleanText(
+                    document.getElementById("marketContext").value,
+                    3000,
+                );
+                let finalJD = jd,
+                    finalCV = cv;
+                if (document.getElementById("anonymizeData").checked) {
+                    finalJD = anonymizeJDText(finalJD);
+                    finalCV = anonymizeCVText(finalCV);
+                }
+                return `You are an expert executive recruiter, ATS reviewer, CV strategist, and application advisor.
+
+${aiSpecificNote(ai)}
+
+Before writing the report, briefly reason internally about the strategic hiring intent of the role.
+
+Your task is to analyze the match between a candidate CV and a job description, then advise how to optimize the CV and application strategy for this exact role.
+
+PRIMARY GOALS
+1. Assess whether the role is worth pursuing
+2. Identify ATS and keyword gaps
+3. Explain how to optimize the CV for this position
+4. Suggest stronger profile summary and bullet point wording
+5. Provide practical application and networking guidance
+6. Assess likely cultural fit for the role and organization
+7. If requested, generate a brief market/company context chapter using the JD and any optional extra context
+8. If requested, generate a cover letter opening draft
+9. If requested, generate compensation positioning advice
+10. If requested, generate a recruiter / hiring manager outreach draft
+
+FOCUS AREAS
+${focus}
+
+If “Market / company context analysis” is requested, generate a brief dedicated chapter near the end of the report. Use the JD first, and enrich it with the optional extra context if provided.
+
+CULTURE LENS
+${culture}
+
+Use your own judgment from the JD and CV to infer role seniority, company scale, and whether the role is more transformation-led or delivery-led. Do not overstate these if the evidence is weak.
+
+OPTIONAL MARKET / COMPANY CONTEXT
+${document.getElementById("focusMarket").checked ? market || "No extra context provided" : "Not requested"}
+
+OUTPUT RULES
+- Output ONLY the final report content
+- Do NOT output raw HTML
+- Do NOT output code
+- Do NOT wrap anything in code blocks
+- Do NOT include preambles like "Sure" or "Here is your report"
+- Do not summarize the CV broadly; focus only on what is relevant for this role
+- Keep the report polished, practical, and concise
+- ${style}
+- If information is missing, state "Not specified" or make a clearly labeled reasonable inference
+
+SCORING DIMENSIONS
+Use these standard dimensions when deriving the overall match score. Adapt them to the actual role and do not force role-specific dimensions that are irrelevant.
+- Role seniority alignment — 10%
+- Industry familiarity — 10%
+- Hard skills match — 40%
+- Soft skills match — 15%
+- Searchability of CV — 15%
+- Education / qualification match — 10%
+
+REQUIRED REPORT STRUCTURE
+1. Executive Summary
+2. Quick Fit Snapshot
+Include a structured scoring breakdown table with columns: Dimension | Weight | Raw Fit | Score
+3. Hidden Hiring Intent
+4. Matching Competencies
+Provide a compact markdown table with columns: JD Requirement | CV Evidence | Fit
+Use fit labels: 🟢 Strong / 🟠 Partial / 🔴 Weak
+5. Less Evident or Missing Competencies
+6. Red Flags & Objections
+Provide a compact table with columns: Likely Concern | Your Counter-Argument | Strength
+Use labels: 🟢 Strong / 🟠 Weak / 🔴 No answer
+7. ATS and Searchability Gaps
+After this section, include an ATS Keyword Tracker table with columns: Keyword | In JD? | In CV? | Priority
+Use labels: 🔴 Missing / 🟡 Partial / 🟢 Present
+8. CV Optimization Tips
+9. Cover Letter Opening Draft (only if requested)
+Provide a concise 3-paragraph opener: hook from hidden intent, evidence bridge, call to action
+10. Compensation Positioning (only if requested)
+Provide a short note on how to frame salary/package expectations, using JD clues and optional market context if available
+11. Culture & Executive Fit
+12. Market / Company Context (only if requested)
+13. Practical Application Advice
+If requested, include a concise recruiter / hiring manager outreach draft
+- If the JD itself contains recruiter or hiring manager names, emails, or contact hints, add LinkedIn search suggestions or pre-filled outreach angles using those details when appropriate
+15. Final Recommendation
+
+INPUT DATA
+
+JOB DESCRIPTION
+
+${finalJD}
+
+------------------------------------------------
+
+CANDIDATE CV
+
+${finalCV}
+
+------------------------------------------------
+
+Generate the final report now.`;
+            }
+            function deriveJDLabel(jd) {
+                const text = (jd || "").trim();
+                const lines = text
+                    .split(/\n+/)
+                    .map((x) => x.trim())
+                    .filter(Boolean);
+                const candidates = lines
+                    .slice(0, 12)
+                    .filter((l) => l.length > 6 && l.length < 120);
+                const blacklist = [
+                    "job description",
+                    "responsibilities",
+                    "requirements",
+                    "qualifications",
+                    "about the role",
+                    "what you'll do",
+                    "what we offer",
+                ];
+                for (const c of candidates) {
+                    const lc = c.toLowerCase();
+                    if (!blacklist.some((b) => lc.includes(b))) return c;
+                }
+                return text.substring(0, 60) || "Untitled JD";
+            }
+            function getJDHistory() {
+                try {
+                    return JSON.parse(
+                        localStorage.getItem("ejmpc_jd_history") || "[]",
+                    );
+                } catch (e) {
+                    return [];
+                }
+            }
+            function getCVHistory() {
+                try {
+                    return JSON.parse(
+                        localStorage.getItem("ejmpc_cv_history") || "[]",
+                    );
+                } catch (e) {
+                    return [];
+                }
+            }
+            function saveJDHistory(jd) {
+                if (!jd) return;
+                let hist = getJDHistory().filter(
+                    (item) => (item.jd || "").trim() !== jd.trim(),
+                );
+                hist.unshift({
+                    label: deriveJDLabel(jd),
+                    when: new Date().toLocaleString(),
+                    jd: jd,
+                });
+                hist = hist.slice(0, 5);
+                localStorage.setItem("ejmpc_jd_history", JSON.stringify(hist));
+                renderJDHistory();
+            }
+            function deriveCVLabel(cv) {
+                const uploaded = (window.lastCVUploadName || "").trim();
+                if (uploaded) return uploaded;
+                const firstLine =
+                    (cv || "")
+                        .split(/\n+/)
+                        .map((x) => x.trim())
+                        .filter(Boolean)[0] || "";
+                return firstLine.substring(0, 60) || "Untitled CV";
+            }
+            function saveCVHistory(cv) {
+                if (!cv) return;
+                let hist = getCVHistory().filter(
+                    (item) => (item.cv || "").trim() !== cv.trim(),
+                );
+                hist.unshift({
+                    label: deriveCVLabel(cv),
+                    when: new Date().toLocaleString(),
+                    cv: cv,
+                });
+                hist = hist.slice(0, 5);
+                localStorage.setItem("ejmpc_cv_history", JSON.stringify(hist));
+                renderCVHistory();
+                window.lastCVUploadName = "";
+            }
+            function renderJDHistory() {
+                const host = document.getElementById("jdHistoryList");
+                const hist = getJDHistory();
+                if (!hist.length) {
+                    host.innerHTML =
+                        '<div class="helper">No recent JDs yet.<br>Fetched or generated JDs will appear here for quick reuse.</div>';
+                    return;
+                }
+                host.innerHTML = hist
+                    .map(
+                        (h, i) =>
+                            `<div class="history-item compact"><div style="min-width:0;flex:1"><span class="history-title" title="${escapeHtml(h.label)}">${escapeHtml(h.label)}</span><div class="history-meta">${escapeHtml(h.when)}</div></div><div class="history-actions"><button class="ghost" onclick="loadJDHistory(${i})">Load</button><button class="ghost" onclick="deleteJDHistory(${i})">Delete</button></div></div>`,
+                    )
+                    .join("");
+            }
+            function renderCVHistory() {
+                const host = document.getElementById("cvHistoryList");
+                const hist = getCVHistory();
+                if (!hist.length) {
+                    host.innerHTML =
+                        '<div class="helper">No recent CVs yet.</div>';
+                    return;
+                }
+                host.innerHTML = hist
+                    .map(
+                        (h, i) =>
+                            `<div class="history-item compact"><div style="min-width:0;flex:1"><span class="history-title" title="${escapeHtml(h.label)}">${escapeHtml(h.label)}</span><div class="history-meta">${escapeHtml(h.when)}</div></div><div class="history-actions"><button class="ghost" onclick="loadCVHistory(${i})">Load</button><button class="ghost" onclick="deleteCVHistory(${i})">Delete</button></div></div>`,
+                    )
+                    .join("");
+            }
+            function loadJDHistory(idx) {
+                const h = getJDHistory()[idx];
+                if (!h) return;
+                document.getElementById("jd").value = h.jd || "";
+                setStatus("scrapeStatus", "Loaded saved JD.", "ok");
+            }
+            function loadCVHistory(idx) {
+                const h = getCVHistory()[idx];
+                if (!h) return;
+                document.getElementById("cv").value = h.cv || "";
+                setStatus("cvStatus", "Loaded saved CV snapshot.", "ok");
+                showStep(2);
+            }
+            function deleteJDHistory(idx) {
+                const hist = getJDHistory();
+                hist.splice(idx, 1);
+                localStorage.setItem("ejmpc_jd_history", JSON.stringify(hist));
+                renderJDHistory();
+            }
+            function deleteCVHistory(idx) {
+                const hist = getCVHistory();
+                hist.splice(idx, 1);
+                localStorage.setItem("ejmpc_cv_history", JSON.stringify(hist));
+                renderCVHistory();
+            }
+            function generatePrompt() {
+                try {
+                    const jd = cleanText(
+                        document.getElementById("jd").value,
+                        9000,
+                    );
+                    const cv = cleanText(
+                        document.getElementById("cv").value,
+                        7000,
+                    );
+                    const aiEl = document.getElementById("aiTarget");
+                    const ai = aiEl ? aiEl.value : "generic";
+                    if (!jd || !cv) {
+                        setStatus(
+                            "promptStatus",
+                            "Please provide both Job Description and CV.",
+                            "warn",
+                        );
+                        return;
+                    }
+                    saveJDHistory(jd);
+                    saveCVHistory(cv);
+                    const prompt = buildPrompt(jd, cv, ai);
+                    document.getElementById("promptOutput").value = prompt;
+                    const tab4 = document.getElementById("tab4");
+                    if (tab4) {
+                        tab4.classList.remove("disabled");
+                        tab4.title = "Result ready";
+                    }
+                    setStatus(
+                        "promptStatus",
+                        "Prompt generated successfully for " +
+                            (aiEl ? aiEl.selectedOptions[0].text : "Generic") +
+                            ".",
+                        "ok",
+                    );
+                    showStep(4);
+                } catch (err) {
+                    console.error(err);
+                    setStatus(
+                        "promptStatus",
+                        "Create failed: " +
+                            (err && err.message ? err.message : err),
+                        "bad",
+                    );
+                }
+            }
+            async function copyPrompt() {
+                const text = document.getElementById("promptOutput").value;
+                if (!text) {
+                    alert("Generate a prompt first.");
+                    return;
+                }
+                await navigator.clipboard.writeText(text);
+                setStatus("promptStatus", "Prompt copied to clipboard.", "ok");
+            }
+            function downloadPrompt() {
+                const text = document.getElementById("promptOutput").value;
+                if (!text) {
+                    alert("Generate a prompt first.");
+                    return;
+                }
+                const blob = new Blob([text], { type: "text/plain" });
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(blob);
+                a.download = "job_match_analysis_prompt.txt";
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(a.href), 500);
+            }
+
+            async function openAI(provider) {
+                const text = document.getElementById("promptOutput").value;
+                if (!text) {
+                    alert("Generate a prompt first.");
+                    return;
+                }
+                await copyPrompt();
+                let url = "https://chatgpt.com/";
+                if (provider === "claude") url = "https://claude.ai/new";
+                if (provider === "gemini")
+                    url = "https://gemini.google.com/app";
+                if (provider === "copilot")
+                    url = "https://copilot.microsoft.com/";
+                if (provider === "perplexity")
+                    url = "https://www.perplexity.ai/";
+                window.open(url, "_blank", "noopener,noreferrer");
+            }
+            function escapeHtml(s) {
+                return String(s)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            const feedbackForm = document.getElementById("feedbackForm");
+            if (feedbackForm) {
+                feedbackForm.addEventListener("submit", async function (e) {
+                    e.preventDefault();
+                    const rating =
+                        document.getElementById("feedbackRating").value;
+                    const comment = (
+                        document.getElementById("feedbackText").value || ""
+                    ).trim();
+                    const body = new URLSearchParams();
+                    body.append("form-name", "feedback");
+                    body.append("rating", rating);
+                    body.append("comment", comment);
+                    try {
+                        const res = await fetch("/", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/x-www-form-urlencoded",
+                            },
+                            body: body.toString(),
+                        });
+                        setStatus(
+                            "feedbackStatus",
+                            res.ok
+                                ? "Thank you — your feedback was submitted."
+                                : "Feedback could not be submitted right now.",
+                            res.ok ? "ok" : "bad",
+                        );
+                        if (res.ok) {
+                            feedbackForm.reset();
+                            document.getElementById("feedbackRating").value =
+                                "0";
+                            document
+                                .querySelectorAll(".star-rating .star")
+                                .forEach((s) => s.classList.remove("selected"));
+                        }
+                    } catch (err) {
+                        setStatus(
+                            "feedbackStatus",
+                            "Feedback could not be submitted right now.",
+                            "bad",
+                        );
+                    }
+                });
+                const stars = document.querySelectorAll(".star-rating .star");
+                stars.forEach((star) => {
+                    star.addEventListener("mouseenter", () => {
+                        const v = Number(star.dataset.value);
+                        stars.forEach((s) =>
+                            s.classList.toggle(
+                                "hovered",
+                                Number(s.dataset.value) <= v,
+                            ),
+                        );
+                    });
+                    star.addEventListener("mouseleave", () => {
+                        stars.forEach((s) => s.classList.remove("hovered"));
+                    });
+                    star.addEventListener("click", () => {
+                        const v = Number(star.dataset.value);
+                        document.getElementById("feedbackRating").value =
+                            String(v);
+                        stars.forEach((s) =>
+                            s.classList.toggle(
+                                "selected",
+                                Number(s.dataset.value) <= v,
+                            ),
+                        );
+                    });
+                });
+            }
+
+            showStep(1);
+            try {
+                renderJDHistory();
+            } catch (e) {
+                console.warn("JD history init failed", e);
+            }
+            try {
+                renderCVHistory();
+            } catch (e) {
+                console.warn("CV history init failed", e);
+            }
+        </script>
+    </body>
+</html>
