@@ -266,6 +266,19 @@
             .wizard-panel.active {
                 display: block;
             }
+
+            .wizard-topbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .wizard-topbar .wizard-note {
+                margin: 0; /* override old spacing */
+            }
+
             .qualitybox {
                 margin-top: 10px;
                 padding: 12px 14px;
@@ -287,29 +300,72 @@
                 border-color: #fecaca;
                 background: #fef2f2;
             }
-            .history-list {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                margin-top: 10px;
-            }
+
+            /* === HISTORY COMPONENT (FINAL CLEAN VERSION) === */
+
             .history-item {
                 display: flex;
                 justify-content: space-between;
-                gap: 10px;
                 align-items: center;
-                padding: 8px 10px;
+                gap: 12px;
+                padding: 10px 12px;
                 border: 1px solid #e5e7eb;
                 border-radius: 10px;
                 background: #fff;
+                flex-wrap: wrap; /* 🔑 allow wrapping */
+                margin-top: 8px;
             }
+
+            .history-text {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .history-title {
+                display: block;
+                font-size: 13px;
+                font-weight: 600;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .history-meta {
+                font-size: 11px;
+                color: #6b7280;
+            }
+
+            /* ✅ buttons ALWAYS horizontal */
+            .history-actions {
+                display: flex;
+                gap: 8px;
+                flex-shrink: 0;
+            }
+
+            .history-actions button {
+                padding: 6px 10px;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+
             .history-item b {
                 font-size: 13px;
             }
-            .history-meta {
-                font-size: 12px;
-                color: var(--muted);
+
+            @media (max-width: 768px) {
+                .history-item {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .history-actions {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row; /* 🔑 FORCE HORIZONTAL */
+                    gap: 8px;
+                }
             }
+
             .step-nav {
                 display: flex;
                 justify-content: space-between;
@@ -454,8 +510,8 @@
             }
             .step1-grid {
                 display: grid;
-                grid-template-columns: 1.2fr 0.8fr;
-                gap: 20px;
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
             }
             .jd-history-panel {
                 max-height: 280px;
@@ -465,27 +521,7 @@
             .history-item.compact {
                 padding: 8px 10px;
             }
-            .history-title {
-                display: block;
-                font-size: 13px;
-                font-weight: 700;
-                line-height: 1.25;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 100%;
-            }
-            .history-actions {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                flex-shrink: 0;
-            }
-            .history-actions button {
-                padding: 8px 12px;
-                font-size: 12px;
-                border-radius: 10px;
-            }
+
             @media (max-width: 980px) {
                 .step1-grid {
                     grid-template-columns: 1fr;
@@ -520,7 +556,7 @@
             }
 
             .focus-item {
-                margin-bottom: 10px;
+                margin-bottom: 6px;
             }
             .focus-item label {
                 font-size: 14px;
@@ -560,18 +596,6 @@
                 grid-column: span 5;
             }
 
-            .history-actions {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                flex-shrink: 0;
-            }
-            .history-actions button {
-                padding: 8px 12px;
-                font-size: 12px;
-                border-radius: 10px;
-            }
-
             @media (max-width: 980px) {
                 .step2-layout .grid {
                     grid-template-columns: 1fr !important;
@@ -597,34 +621,6 @@
             }
             .option-checkbox input {
                 transform: scale(1.05);
-            }
-
-            .history-actions {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                flex-shrink: 0;
-            }
-            .history-actions button {
-                padding: 8px 12px;
-                font-size: 12px;
-                border-radius: 10px;
-            }
-
-            .focus-item {
-                margin-bottom: 10px;
-            }
-            .focus-item label {
-                font-size: 14px;
-                color: #1f2937;
-            }
-            .focus-item .payoff {
-                display: block;
-                font-size: 11px;
-                color: #6b7280;
-                margin-left: 24px;
-                margin-top: 1px;
-                line-height: 1.35;
             }
 
             @media (max-width: 980px) {
@@ -675,6 +671,26 @@
 
                 .step3-layout .right-column {
                     grid-column: 1;
+                }
+                .history-item {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .history-actions {
+                    width: 100%;
+                }
+
+                .history-actions button {
+                    white-space: nowrap;
+                }
+                .wizard-topbar {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .wizard-topbar button {
+                    align-self: flex-end;
                 }
             }
 
@@ -781,18 +797,20 @@
                         </div>
                     </div>
 
-                    <div
-                        class="wizard-note"
-                        id="wizardNote"
-                        style="margin-bottom: 12px"
-                    >
-                        Result unlocks after you complete steps 1–3 and create
-                        the analysis.
+                    <div class="wizard-topbar">
+                        <div class="wizard-note" id="wizardNote">
+                            Result unlocks after you complete steps 1–3 and
+                            create the analysis.
+                        </div>
+
+                        <button id="topNextBtn" onclick="goToNextStep()">
+                            Next step
+                        </button>
                     </div>
 
                     <div class="wizard-panel active" id="step1">
                         <div class="step1-grid">
-                            <div>
+                            <div class="settings-card">
                                 <h2>Job Description URL (optional)</h2>
                                 <input
                                     id="jobURL"
@@ -820,11 +838,12 @@
                                     class="qualitybox hidden"
                                 ></div>
                             </div>
-                            <div>
+                            <div class="settings-card">
                                 <h2>Reuse a recent JD</h2>
                                 <div class="helper">
                                     Load a previously used JD.
                                 </div>
+
                                 <div class="jd-history-panel">
                                     <div
                                         class="history-list"
@@ -853,8 +872,8 @@
                     </div>
 
                     <div class="wizard-panel step2-layout" id="step2">
-                        <div class="grid">
-                            <div class="step2-main">
+                        <div class="step1-grid">
+                            <div class="settings-card">
                                 <h2>Candidate CV</h2>
                                 <textarea
                                     id="cv"
@@ -872,7 +891,7 @@
                                     PDF extraction works for text-based PDFs.
                                 </div>
                             </div>
-                            <div class="step2-side">
+                            <div class="settings-card">
                                 <h2>Recent CVs</h2>
                                 <div class="helper">Reload a previous CV.</div>
                                 <div class="jd-history-panel">
@@ -884,7 +903,7 @@
                             </div>
 
                             <div class="full">
-                                <h2>Privacy & Anonymization</h2>
+                                <h2>CV Anonymization (done by default)</h2>
                                 <label class="option-checkbox">
                                     <input
                                         type="checkbox"
@@ -892,12 +911,12 @@
                                         checked
                                     />
                                     Anonymize obvious personal data before
-                                    generating prompt
+                                    generating prompt.
                                 </label>
                                 <div class="helper">
-                                    This replaces clear identifiers such as full
-                                    name, emails, phone numbers, URLs, and
-                                    LinkedIn profile links.
+                                    Anonymzes sensitive data - full name, email,
+                                    phone number, URL, ... Best effort, kindly
+                                    check.
                                 </div>
                                 <div class="row" style="margin-bottom: 6px">
                                     <button
@@ -1055,6 +1074,7 @@
                                                 ><input
                                                     type="checkbox"
                                                     id="focusCoverLetter"
+                                                    checked
                                                 />
                                                 Cover letter opening</label
                                             >
@@ -1357,6 +1377,43 @@
             pdfjsLib.GlobalWorkerOptions.workerSrc =
                 "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
+            function updateNextButton() {
+                const btn = document.getElementById("topNextBtn");
+                if (!btn) return;
+
+                const activeStep = [1, 2, 3, 4].find((i) =>
+                    document
+                        .getElementById("step" + i)
+                        .classList.contains("active"),
+                );
+
+                // Step 1 → Step 2
+                if (activeStep === 1) {
+                    btn.style.display = "inline-block";
+                    btn.textContent = "Step 2 - Profile";
+                }
+                // Step 2 → Step 3
+                else if (activeStep === 2) {
+                    btn.style.display = "inline-block";
+                    btn.textContent = "Step 3 -  Goal";
+                }
+                // Step 3 & 4 → NO BUTTON
+                else {
+                    btn.style.display = "none";
+                }
+            }
+
+            function goToNextStep() {
+                const activeStep = [1, 2, 3, 4].find((i) =>
+                    document
+                        .getElementById("step" + i)
+                        .classList.contains("active"),
+                );
+
+                if (activeStep === 1) goToStep2();
+                else if (activeStep === 2) goToStep3();
+            }
+
             function showStep(n, skipScroll = false) {
                 const tab4 = document.getElementById("tab4");
                 const note = document.getElementById("wizardNote");
@@ -1381,6 +1438,7 @@
                         n < 4
                             ? "Result unlocks after you complete steps 1–3 and create the analysis."
                             : "";
+                updateNextButton();
                 const target = document.getElementById("mainContent");
                 if (!skipScroll && target) {
                     target.scrollIntoView({
@@ -1388,31 +1446,6 @@
                         block: "start",
                     });
                 }
-            }
-            function goToStep2() {
-                const jd = cleanText(document.getElementById("jd").value, 50);
-                const url = cleanText(
-                    document.getElementById("jobURL").value,
-                    50,
-                );
-                if (!jd && !url) {
-                    const ok = window.confirm(
-                        "No JD detected yet. Continue anyway?",
-                    );
-                    if (!ok) return;
-                }
-                showStep(2);
-            }
-
-            function goToStep3() {
-                const cv = cleanText(document.getElementById("cv").value, 50);
-                if (!cv) {
-                    const ok = window.confirm(
-                        "No CV detected yet. Continue anyway?",
-                    );
-                    if (!ok) return;
-                }
-                showStep(3);
             }
 
             function goToStep2() {
@@ -1807,6 +1840,157 @@
                     }
                 });
 
+            const ROLE_WORDS = [
+                // seniority
+                "senior",
+                "junior",
+                "lead",
+                "leader",
+                "principal",
+                "staff",
+                "head",
+                "chief",
+                "vp",
+                "svp",
+                "evp",
+                "director",
+                "associate",
+                "assistant",
+                "intern",
+                "trainee",
+
+                // management / leadership
+                "manager",
+                "management",
+                "executive",
+                "officer",
+                "coordinator",
+                "supervisor",
+                "administrator",
+                "controller",
+                "planner",
+
+                // business / strategy
+                "strategy",
+                "strategist",
+                "business",
+                "operations",
+                "operational",
+                "transformation",
+                "consultant",
+                "advisory",
+                "advisor",
+                "governance",
+                "risk",
+                "compliance",
+
+                // product / project
+                "product",
+                "program",
+                "project",
+                "owner",
+                "scrum",
+                "agile",
+                "delivery",
+                "portfolio",
+
+                // tech / data / AI
+                "engineer",
+                "engineering",
+                "developer",
+                "development",
+                "architect",
+                "software",
+                "data",
+                "machine",
+                "learning",
+                "analytics",
+                "analyst",
+                "science",
+                "scientist",
+                "cloud",
+                "devops",
+                "security",
+                "cyber",
+                "platform",
+                "infrastructure",
+                "systems",
+                "technology",
+
+                // commercial
+                "sales",
+                "account",
+                "marketing",
+                "growth",
+                "brand",
+                "customer",
+                "success",
+                "crm",
+                "partnerships",
+                "business development",
+
+                // finance / legal / hr
+                "finance",
+                "financial",
+                "accounting",
+                "legal",
+                "human",
+                "people",
+                "talent",
+                "recruitment",
+                "procurement",
+                "sourcing",
+
+                // industry / functions
+                "supply",
+                "chain",
+                "logistics",
+                "manufacturing",
+                "production",
+                "quality",
+                "research",
+                "r&d",
+                "innovation",
+                "design",
+
+                // healthcare / misc
+                "medical",
+                "clinical",
+                "pharma",
+                "health",
+                "education",
+                "teaching",
+                "training",
+
+                // misc common
+                "specialist",
+                "expert",
+                "professional",
+                "consulting",
+                "services",
+                "support",
+                "field",
+                "regional",
+                "global",
+            ];
+
+            const ROLE_REGEX = new RegExp(
+                `\\b(${ROLE_WORDS.join("|")})\\b`,
+                "i",
+            );
+
+            // strict short tokens (must be uppercase)
+            const STRICT_ROLE_REGEX = /\b(AI|ML|IT)\b/;
+
+            function looksLikeRole(text) {
+                if (!text) return false;
+
+                return ROLE_REGEX.test(text) || STRICT_ROLE_REGEX.test(text);
+            }
+
+            const NAME_REGEX =
+                /\b([A-Z][a-z]+|[A-Z]\.|[A-Z][a-z]*[A-Z][a-z]+)(?:\s+(?:[a-z]{1,3}\s+)?([A-Z][a-z]+|[A-Z]\.)){1,2}\b/g;
+
             function anonymizeCVText(text) {
                 let t = text || "";
                 t = t.replace(
@@ -1815,29 +1999,35 @@
                 );
                 t = t.replace(/(\+?\d[\d\s()./-]{7,}\d)/g, "[PHONE]");
                 t = t.replace(/https?:\/\/\S+/gi, "[URL]");
-                t = t.replace(/linkedin\.com\/in\/\S+/gi, "[PROFILE_LINK]");
+                t = t.replace(
+                    /(https?:\/\/)?(www\.)?linkedin\.com\/in\/[a-zA-Z0-9\-_%]+/gi,
+                    "[LINKEDIN_PAGE]",
+                );
                 const head = t.slice(0, 250),
                     tail = t.slice(250);
-                const redactedHead = head.replace(
-                    /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})\b/g,
-                    (m) => {
-                        const ignore = [
-                            "Work Experience",
-                            "Professional Experience",
-                            "Education",
-                            "Skills",
-                            "Languages",
-                            "Certifications",
-                            "Summary",
-                            "Profile",
-                            "Experience",
-                            "Employment History",
-                            "Curriculum Vitae",
-                            "Resume",
-                        ];
-                        return ignore.includes(m) ? m : "[NAME]";
-                    },
-                );
+                const redactedHead = head.replace(NAME_REGEX, (m) => {
+                    const ignore = [
+                        "Work Experience",
+                        "Professional Experience",
+                        "Education",
+                        "Skills",
+                        "Languages",
+                        "Certifications",
+                        "Summary",
+                        "Profile",
+                        "Experience",
+                        "Employment History",
+                        "Curriculum Vitae",
+                        "Resume",
+                    ];
+
+                    if (ignore.includes(m)) return m;
+
+                    // 🔑 NEW: skip job titles
+                    if (looksLikeRole(m)) return m;
+
+                    return "[NAME]";
+                });
                 return redactedHead + tail;
             }
 
@@ -2128,8 +2318,22 @@ Generate the final report now.`;
                 }
                 host.innerHTML = hist
                     .map(
-                        (h, i) =>
-                            `<div class="history-item compact"><div style="min-width:0;flex:1"><span class="history-title" title="${escapeHtml(h.label)}">${escapeHtml(h.label)}</span><div class="history-meta">${escapeHtml(h.when)}</div></div><div class="history-actions"><button class="ghost" onclick="loadJDHistory(${i})">Load</button><button class="ghost" onclick="deleteJDHistory(${i})">Delete</button></div></div>`,
+                        (h, i) => `
+                  <div class="history-item compact">
+                      <div class="history-text">
+                          <span class="history-title" title="${escapeHtml(h.label)}">
+                              ${escapeHtml(h.label)}
+                          </span>
+                          <div class="history-meta">
+                              ${escapeHtml(h.when)}
+                          </div>
+                      </div>
+
+                      <div class="history-actions">
+                          <button class="ghost" onclick="loadJDHistory(${i})">Load</button>
+                          <button class="ghost" onclick="deleteJDHistory(${i})">Delete</button>
+                      </div>
+                  </div>`,
                     )
                     .join("");
             }
