@@ -3,6 +3,8 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="msvalidate.01" content="12428D3EA9997BB8FE6D7C6BE0505108" />
+
         <title>JobFit Jockey — Executive Job Match Advisor</title>
         <meta
             property="og:title"
@@ -52,7 +54,7 @@
                 background: var(--card);
                 border-radius: 18px;
                 box-shadow: 0 10px 28px rgba(16, 48, 72, 0.08);
-                padding: 30px;
+                padding: 24px;
                 margin-bottom: 28px;
             }
             h1 {
@@ -165,11 +167,11 @@
             .brand-hero {
                 display: grid;
                 grid-template-columns: 180px 1fr;
-                gap: 26px;
+                gap: 18px;
                 align-items: center;
             }
             .brand-visual img {
-                max-width: 180px;
+                max-width: 150px;
                 width: 100%;
                 display: block;
                 filter: drop-shadow(0 6px 18px rgba(16, 48, 72, 0.1));
@@ -244,7 +246,7 @@
                 grid-template-columns: repeat(4, 1fr);
                 gap: 10px;
                 margin-top: 12px;
-                margin-bottom: 28px;
+                margin-bottom: 18px;
             }
             .wizard-tab {
                 padding: 16px;
@@ -386,6 +388,7 @@
             .tipbox {
                 background: #eefcf6;
                 border-color: #bbf7d0;
+                align-items: center;
             }
             .micro-preview {
                 background: #f8fafc;
@@ -497,11 +500,7 @@
                 font-size: 13px;
                 color: #6b7280;
             }
-            .wizard-tab.disabled {
-                opacity: 0.45;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
+
             .cta-compact {
                 padding: 14px 16px;
                 border: 1px solid #d7e2f0;
@@ -518,19 +517,6 @@
             }
             .enrich-actions {
                 margin-top: 10px;
-            }
-            .option-checkbox {
-                font-family: inherit;
-                font-size: 14px;
-                color: inherit;
-                margin-right: 18px;
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                cursor: pointer;
-            }
-            .option-checkbox input {
-                transform: scale(1.05);
             }
 
             .focus-item {
@@ -573,24 +559,7 @@
             .step2-side {
                 grid-column: span 5;
             }
-            .jd-history-panel {
-                max-height: 280px;
-                overflow: auto;
-                padding-right: 4px;
-            }
-            .history-item.compact {
-                padding: 8px 10px;
-            }
-            .history-title {
-                display: block;
-                font-size: 13px;
-                font-weight: 700;
-                line-height: 1.25;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 100%;
-            }
+
             .history-actions {
                 display: flex;
                 flex-direction: column;
@@ -602,38 +571,7 @@
                 font-size: 12px;
                 border-radius: 10px;
             }
-            .wizard-tab.disabled {
-                opacity: 0.45;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-            .wizard-note {
-                margin-top: 10px;
-                font-size: 13px;
-                color: #6b7280;
-            }
-            .focus-item {
-                margin-bottom: 10px;
-            }
-            .focus-item label {
-                font-size: 14px;
-                color: #1f2937;
-            }
-            .focus-item .payoff {
-                display: block;
-                font-size: 11px;
-                color: #6b7280;
-                margin-left: 24px;
-                margin-top: 1px;
-                line-height: 1.35;
-            }
-            .cta-compact {
-                padding: 14px 16px;
-                border: 1px solid #d7e2f0;
-                border-radius: 14px;
-                background: #f8fbff;
-                margin-bottom: 18px;
-            }
+
             @media (max-width: 980px) {
                 .step2-layout .grid {
                     grid-template-columns: 1fr !important;
@@ -650,118 +588,17 @@
 
         <style>
             .option-checkbox {
-                font-family: inherit;
                 font-size: 14px;
-                color: inherit;
-                margin-right: 18px;
-                display: inline-flex;
+                display: flex;
                 align-items: center;
                 gap: 6px;
+                color: #374151;
                 cursor: pointer;
             }
             .option-checkbox input {
                 transform: scale(1.05);
             }
 
-            .wizard-note {
-                margin-top: 10px;
-                font-size: 13px;
-                color: #6b7280;
-            }
-            .wizard-tab.disabled {
-                opacity: 0.45;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-            .cta-compact {
-                padding: 14px 16px;
-                border: 1px solid #d7e2f0;
-                border-radius: 14px;
-                background: #f8fbff;
-                margin-bottom: 18px;
-            }
-            .enrich-box {
-                margin-top: 14px;
-                padding: 14px 16px;
-                border: 1px solid #e5edf6;
-                border-radius: 14px;
-                background: #fbfcfe;
-            }
-            .enrich-actions {
-                margin-top: 10px;
-            }
-            .option-checkbox {
-                font-family: inherit;
-                font-size: 14px;
-                color: inherit;
-                margin-right: 18px;
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                cursor: pointer;
-            }
-            .option-checkbox input {
-                transform: scale(1.05);
-            }
-
-            .focus-item {
-                margin-bottom: 10px;
-            }
-            .focus-item label {
-                font-size: 14px;
-                color: #1f2937;
-            }
-            .focus-item .payoff {
-                display: block;
-                font-size: 11px;
-                color: #6b7280;
-                margin-left: 24px;
-                margin-top: 1px;
-                line-height: 1.35;
-            }
-            .signal-box {
-                padding: 12px 14px;
-                border: 1px solid #dbe3f0;
-                border-radius: 12px;
-                background: #f8fbff;
-            }
-            .signal-pill {
-                display: inline-block;
-                padding: 6px 10px;
-                border-radius: 999px;
-                background: #eef4fb;
-                color: #204870;
-                font-size: 12px;
-                margin: 4px 6px 0 0;
-            }
-
-            .step2-layout .grid {
-                grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
-            }
-            .step2-main {
-                grid-column: span 7;
-            }
-            .step2-side {
-                grid-column: span 5;
-            }
-            .jd-history-panel {
-                max-height: 280px;
-                overflow: auto;
-                padding-right: 4px;
-            }
-            .history-item.compact {
-                padding: 8px 10px;
-            }
-            .history-title {
-                display: block;
-                font-size: 13px;
-                font-weight: 700;
-                line-height: 1.25;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 100%;
-            }
             .history-actions {
                 display: flex;
                 flex-direction: column;
@@ -773,16 +610,7 @@
                 font-size: 12px;
                 border-radius: 10px;
             }
-            .wizard-tab.disabled {
-                opacity: 0.45;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
-            .wizard-note {
-                margin-top: 10px;
-                font-size: 13px;
-                color: #6b7280;
-            }
+
             .focus-item {
                 margin-bottom: 10px;
             }
@@ -798,13 +626,7 @@
                 margin-top: 1px;
                 line-height: 1.35;
             }
-            .cta-compact {
-                padding: 14px 16px;
-                border: 1px solid #d7e2f0;
-                border-radius: 14px;
-                background: #f8fbff;
-                margin-bottom: 18px;
-            }
+
             @media (max-width: 980px) {
                 .step2-layout .grid {
                     grid-template-columns: 1fr !important;
@@ -817,8 +639,79 @@
                     max-height: none;
                 }
             }
+
+            /* === STEP 3 LAYOUT === */
+
+            .step3-layout {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+                align-items: start;
+            }
+
+            /* LEFT COLUMN */
+            .step3-layout .left-column {
+                grid-column: 1;
+            }
+
+            /* RIGHT COLUMN */
+            .step3-layout .right-column {
+                grid-column: 2;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            /* Prevent inheritance conflicts */
+            .step3-layout * {
+                box-sizing: border-box;
+            }
+
+            /* Mobile responsiveness */
+            @media (max-width: 768px) {
+                .step3-layout {
+                    grid-template-columns: 1fr;
+                }
+
+                .step3-layout .right-column {
+                    grid-column: 1;
+                }
+            }
+
+            .focus-group {
+                margin-top: 12px;
+                padding-top: 6px;
+                border-top: 1px solid #e5e7eb;
+            }
+
+            .focus-group h3 {
+                font-size: 16px;
+                font-weight: 600;
+                margin-bottom: 4px;
+                color: #374151;
+            }
+
+            .focus-item {
+                padding: 6px 0;
+            }
+
+            .focus-item:hover {
+                background: #f9fafb;
+            }
+
+            .settings-card {
+                background: #f8fafc;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                padding: 14px;
+            }
+
+            .underline {
+                text-decoration: underline;
+            }
         </style>
     </head>
+
     <body>
         <div class="wrap">
             <div class="card">
@@ -830,434 +723,478 @@
                         />
                     </div>
                     <div>
-                        <h1>
-                            JobFit Jockey <span class="version-mark">v2</span>
+                        <h1 style="font-size: 28px; margin-bottom: 6px">
+                            JobFit Jockey — Your smart job matcher
+                            <span class="version-mark">v2</span>
                         </h1>
-                        <div class="brand-subtitle">
-                            Executive Job Match Advisor
-                        </div>
-                        <p>
-                            Turn any job description and CV into a high-quality
-                            job match analysis prompt — for candidates,
-                            recruiters, and career advisors.
+                        <p style="font-size: 14px">
+                            <b>3 steps</b> that turn any job description and CV
+                            into a <b>structured job match analysis</b> prompt —
+                            for candidates, recruiters, and career advisors.
                         </p>
                         <div class="privacy-line">
-                            We value your privacy. Your data stays in your
-                            browser.<br />Nothing is stored on this site -
-                            except for your feedback we're happy to receive at
-                            the end of the process.
-                        </div>
-                        <div class="progress-wrap">
-                            <div class="progress-bar">
-                                <div
-                                    class="progress-fill"
-                                    id="progressFill"
-                                ></div>
-                            </div>
+                            <b>Our pledge</b><br />
+                            1. Your data stays <b>in your browser</b> —
+                            <span class="underline">never on our servers</span
+                            >.<br />
+                            2. You use <b>your own AI assistant</b> — no new
+                            subscription required.<br />
+                            3. We generate a
+                            <b>consistent, high-quality prompt</b> — in full
+                            transparency.
                         </div>
                     </div>
                 </div>
-                <div class="workflow">
-                    <div class="step">
-                        <div><span class="stepnum">1</span><b>Target</b></div>
-                        <div class="helper">
-                            Add a JD URL or paste the job description.
-                        </div>
-                    </div>
-                    <div class="step">
-                        <div><span class="stepnum">2</span><b>Profile</b></div>
-                        <div class="helper">
-                            Paste your CV or upload PDF, DOCX, or TXT.
-                        </div>
-                    </div>
-                    <div class="step">
-                        <div><span class="stepnum">3</span><b>Goal</b></div>
-                        <div class="helper">
-                            Choose focus areas, culture lens, and output style.
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="card">
-                <div class="wizard-tabs">
+                <div class="card" id="mainContent">
+                    <div class="progress-wrap">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+
+                    <div class="wizard-tabs">
+                        <div
+                            class="wizard-tab active"
+                            onclick="showStep(1)"
+                            id="tab1"
+                        >
+                            <b>1. Target Job</b>
+                            <div class="helper">Fetch JD URL / JD text</div>
+                        </div>
+                        <div class="wizard-tab" onclick="goToStep2()" id="tab2">
+                            <b>2. Profile</b>
+                            <div class="helper">CV + privacy options</div>
+                        </div>
+                        <div class="wizard-tab" onclick="goToStep3()" id="tab3">
+                            <b>3. Goal</b>
+                            <div class="helper">Focus areas & output style</div>
+                        </div>
+                        <div
+                            class="wizard-tab disabled"
+                            onclick="showStep(4)"
+                            id="tab4"
+                            title="Complete steps 1–3 first"
+                        >
+                            <b>Result</b>
+                            <div class="helper">Prompt + launch</div>
+                        </div>
+                    </div>
+
                     <div
-                        class="wizard-tab active"
-                        onclick="showStep(1)"
-                        id="tab1"
+                        class="wizard-note"
+                        id="wizardNote"
+                        style="margin-bottom: 12px"
                     >
-                        <b>1. Target</b>
-                        <div class="helper">JD URL / JD text</div>
+                        Result unlocks after you complete steps 1–3 and create
+                        the analysis.
                     </div>
-                    <div class="wizard-tab" onclick="goToStep2()" id="tab2">
-                        <b>2. Profile</b>
-                        <div class="helper">CV + privacy options</div>
-                    </div>
-                    <div class="wizard-tab" onclick="goToStep3()" id="tab3">
-                        <b>3. Goal</b>
-                        <div class="helper">Focus areas</div>
-                    </div>
-                    <div
-                        class="wizard-tab disabled"
-                        onclick="showStep(4)"
-                        id="tab4"
-                        title="Complete steps 1–3 first"
-                    >
-                        <b>Result</b>
-                        <div class="helper">Prompt + launch</div>
-                    </div>
-                </div>
-                <div class="wizard-note" id="wizardNote">
-                    Result unlocks after you complete steps 1–3 and create the
-                    analysis.
-                </div>
 
-                <div class="wizard-panel active" id="step1">
-                    <div class="step1-grid">
-                        <div>
-                            <h2>Job Description URL (optional)</h2>
-                            <input
-                                id="jobURL"
-                                type="text"
-                                placeholder="Paste a job URL here"
-                            />
-                            <div class="row" style="margin-top: 14px">
-                                <button onclick="scrapeJD()">Fetch JD</button>
-                                <button class="secondary" onclick="clearJD()">
-                                    Clear JD
-                                </button>
-                            </div>
-                            <div class="status" id="scrapeStatus">
-                                Best-effort page fetch. LinkedIn and some
-                                corporate sites may block browser access and
-                                require manual copy/paste.
-                            </div>
-                            <div
-                                id="scrapeQuality"
-                                class="qualitybox hidden"
-                            ></div>
-                        </div>
-                        <div>
-                            <h2>Reuse a recent JD</h2>
-                            <div class="helper">Load a previously used JD.</div>
-                            <div class="jd-history-panel">
-                                <div
-                                    class="history-list"
-                                    id="jdHistoryList"
-                                ></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="full" style="margin-top: 22px">
-                        <h2>Or paste the JD manually</h2>
-                        <textarea
-                            id="jd"
-                            placeholder="Paste the full job description here if fetching does not work."
-                        ></textarea>
-                        <div class="helper">
-                            Manual fallback: paste the job description here if
-                            needed.
-                        </div>
-                    </div>
-                    <div class="full">
-                        <div class="step-nav">
-                            <div></div>
-                            <button onclick="goToStep2()">Next step</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="wizard-panel step2-layout" id="step2">
-                    <div class="grid">
-                        <div class="step2-main">
-                            <h2>Candidate CV</h2>
-                            <textarea
-                                id="cv"
-                                placeholder="Paste CV text here, or upload a PDF / DOCX / TXT file below."
-                            ></textarea>
-                            <input
-                                id="cvFile"
-                                type="file"
-                                accept=".pdf,.docx,.txt"
-                            />
-                            <div class="status" id="cvStatus">
-                                Awaiting CV input.
-                            </div>
-                            <div class="helper">
-                                PDF extraction works for text-based PDFs.
-                            </div>
-                        </div>
-                        <div class="step2-side">
-                            <h2>Recent CVs</h2>
-                            <div class="helper">Reload a previous CV.</div>
-                            <div class="jd-history-panel">
-                                <div
-                                    class="history-list"
-                                    id="cvHistoryList"
-                                ></div>
-                            </div>
-                        </div>
-                        <div class="full">
-                            <h2>Privacy & Anonymization</h2>
-                            <label
-                                ><input
-                                    type="checkbox"
-                                    id="anonymizeData"
-                                    checked
+                    <div class="wizard-panel active" id="step1">
+                        <div class="step1-grid">
+                            <div>
+                                <h2>Job Description URL (optional)</h2>
+                                <input
+                                    id="jobURL"
+                                    type="text"
+                                    placeholder="Paste a job URL here"
                                 />
-                                Anonymize obvious personal data before
-                                generating prompt</label
-                            >
-                            <div class="helper">
-                                This replaces clear identifiers such as full
-                                name, emails, phone numbers, URLs, and LinkedIn
-                                profile links.
+                                <div class="row" style="margin-top: 14px">
+                                    <button onclick="scrapeJD()">
+                                        Fetch JD
+                                    </button>
+                                    <button
+                                        class="secondary"
+                                        onclick="clearJD()"
+                                    >
+                                        Clear JD
+                                    </button>
+                                </div>
+                                <div class="status" id="scrapeStatus">
+                                    Best-effort page fetch. LinkedIn and some
+                                    corporate sites may block browser access and
+                                    require manual copy/paste.
+                                </div>
+                                <div
+                                    id="scrapeQuality"
+                                    class="qualitybox hidden"
+                                ></div>
                             </div>
-                            <div class="row">
-                                <button
-                                    class="secondary"
-                                    onclick="previewRedaction()"
-                                >
-                                    Preview anonymized CV
-                                </button>
+                            <div>
+                                <h2>Reuse a recent JD</h2>
+                                <div class="helper">
+                                    Load a previously used JD.
+                                </div>
+                                <div class="jd-history-panel">
+                                    <div
+                                        class="history-list"
+                                        id="jdHistoryList"
+                                    ></div>
+                                </div>
                             </div>
+                        </div>
+                        <div class="full" style="margin-top: 22px">
+                            <h2>Or paste the JD manually</h2>
                             <textarea
-                                id="redactionPreview"
-                                class="smalltext"
-                                placeholder="Anonymized CV preview appears here."
+                                id="jd"
+                                placeholder="Paste the full job description here if fetching does not work."
                             ></textarea>
+                            <div class="helper">
+                                Manual fallback: paste the job description here
+                                if needed.
+                            </div>
                         </div>
                         <div class="full">
                             <div class="step-nav">
-                                <button class="secondary" onclick="showStep(1)">
-                                    Back</button
-                                ><button onclick="goToStep3()">
-                                    Next step
+                                <div></div>
+                                <button onclick="goToStep2()">Next step</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wizard-panel step2-layout" id="step2">
+                        <div class="grid">
+                            <div class="step2-main">
+                                <h2>Candidate CV</h2>
+                                <textarea
+                                    id="cv"
+                                    placeholder="Paste CV text here, or upload a PDF / DOCX / TXT file below."
+                                ></textarea>
+                                <input
+                                    id="cvFile"
+                                    type="file"
+                                    accept=".pdf,.docx,.txt"
+                                />
+                                <div class="status" id="cvStatus">
+                                    Awaiting CV input.
+                                </div>
+                                <div class="helper">
+                                    PDF extraction works for text-based PDFs.
+                                </div>
+                            </div>
+                            <div class="step2-side">
+                                <h2>Recent CVs</h2>
+                                <div class="helper">Reload a previous CV.</div>
+                                <div class="jd-history-panel">
+                                    <div
+                                        class="history-list"
+                                        id="cvHistoryList"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="full">
+                                <h2>Privacy & Anonymization</h2>
+                                <label class="option-checkbox">
+                                    <input
+                                        type="checkbox"
+                                        id="anonymizeData"
+                                        checked
+                                    />
+                                    Anonymize obvious personal data before
+                                    generating prompt
+                                </label>
+                                <div class="helper">
+                                    This replaces clear identifiers such as full
+                                    name, emails, phone numbers, URLs, and
+                                    LinkedIn profile links.
+                                </div>
+                                <div class="row" style="margin-bottom: 6px">
+                                    <button
+                                        class="secondary"
+                                        onclick="previewRedaction()"
+                                    >
+                                        Preview anonymized CV
+                                    </button>
+                                </div>
+                                <textarea
+                                    id="redactionPreview"
+                                    class="smalltext"
+                                    placeholder="Anonymized CV preview appears here."
+                                ></textarea>
+                            </div>
+                            <div class="full">
+                                <div class="step-nav">
+                                    <button
+                                        class="secondary"
+                                        onclick="showStep(1)"
+                                    >
+                                        Back</button
+                                    ><button onclick="goToStep3()">
+                                        Next step
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wizard-panel" id="step3">
+                        <div class="cta-compact">
+                            <div
+                                class="row"
+                                style="
+                                    justify-content: space-between;
+                                    align-items: center;
+                                "
+                            >
+                                <div>
+                                    <h2 style="margin: 0 0 6px 0">
+                                        Ready to create your analysis?
+                                    </h2>
+                                    <div class="helper">
+                                        Once your goal settings look right,
+                                        create the result and continue to the
+                                        Result tab.
+                                    </div>
+                                </div>
+                                <button
+                                    class="primary-cta"
+                                    onclick="generatePrompt()"
+                                >
+                                    Create My Job Match Analysis
                                 </button>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="wizard-panel" id="step3">
-                    <div class="cta-compact">
-                        <div
-                            class="row"
-                            style="
-                                justify-content: space-between;
-                                align-items: center;
-                            "
-                        >
-                            <div>
-                                <h2 style="margin: 0 0 6px 0">
-                                    Ready to create your analysis?
-                                </h2>
-                                <div class="helper">
-                                    Once your goal settings look right, create
-                                    the result and continue to the Result tab.
+                        <div class="step3-layout" style="margin-top: 24px">
+                            <!-- LEFT COLUMN -->
+                            <div class="left-column">
+                                <div class="settings-card">
+                                    <h2>Focus areas</h2>
+                                    <div class="helper">
+                                        Pre-selected based on best-practice
+                                        executive job analysis.
+                                    </div>
+
+                                    <!-- CORE -->
+                                    <div class="focus-group">
+                                        <h3>Core evaluation</h3>
+
+                                        <div class="focus-item">
+                                            <label
+                                                ><input
+                                                    type="checkbox"
+                                                    id="focusExecutive"
+                                                    checked
+                                                />
+                                                Executive summary</label
+                                            >
+                                            <span class="payoff"
+                                                >Go / no-go recommendation + key
+                                                risk.</span
+                                            >
+                                        </div>
+
+                                        <div class="focus-item">
+                                            <label
+                                                ><input
+                                                    type="checkbox"
+                                                    id="focusATS"
+                                                    checked
+                                                />
+                                                ATS keyword gaps</label
+                                            >
+                                            <span class="payoff"
+                                                >Identify blocking gaps for
+                                                recruiter search.</span
+                                            >
+                                        </div>
+
+                                        <div class="focus-item">
+                                            <label
+                                                ><input
+                                                    type="checkbox"
+                                                    id="focusCV"
+                                                    checked
+                                                />
+                                                CV optimization</label
+                                            >
+                                            <span class="payoff"
+                                                >Sharpen positioning for this
+                                                exact role.</span
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <!-- STRATEGY -->
+                                    <div class="focus-group">
+                                        <h3>Application strategy</h3>
+
+                                        <div class="focus-item">
+                                            <label
+                                                ><input
+                                                    type="checkbox"
+                                                    id="focusStrategy"
+                                                    checked
+                                                />
+                                                Application strategy</label
+                                            >
+                                            <span class="payoff"
+                                                >Apply vs network vs
+                                                reposition.</span
+                                            >
+                                        </div>
+
+                                        <div class="focus-item">
+                                            <label
+                                                ><input
+                                                    type="checkbox"
+                                                    id="focusOutreach"
+                                                    checked
+                                                />
+                                                Outreach draft</label
+                                            >
+                                            <span class="payoff"
+                                                >Short recruiter / HM
+                                                message.</span
+                                            >
+                                        </div>
+
+                                        <div class="focus-item">
+                                            <label
+                                                ><input
+                                                    type="checkbox"
+                                                    id="focusCoverLetter"
+                                                />
+                                                Cover letter opening</label
+                                            >
+                                            <span class="payoff"
+                                                >3-paragraph tailored
+                                                opener.</span
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <!-- MARKET -->
+                                    <div class="focus-group">
+                                        <h3>Market & positioning</h3>
+
+                                        <div class="focus-item">
+                                            <label
+                                                ><input
+                                                    type="checkbox"
+                                                    id="focusCompensation"
+                                                />
+                                                Compensation positioning</label
+                                            >
+                                            <span class="payoff"
+                                                >Frame salary
+                                                expectations.</span
+                                            >
+                                        </div>
+
+                                        <div class="focus-item">
+                                            <label
+                                                ><input
+                                                    type="checkbox"
+                                                    id="focusMarket"
+                                                />
+                                                Market / company context</label
+                                            >
+                                            <span class="payoff"
+                                                >Add external context when
+                                                relevant.</span
+                                            >
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <button
-                                class="primary-cta"
-                                onclick="generatePrompt()"
+
+                            <!-- RIGHT COLUMN -->
+                            <div class="right-column">
+                                <!-- Prompt tuning -->
+                                <div class="settings-card">
+                                    <h2>Tune to your favorite AI (optional)</h2>
+                                    <select id="aiTarget">
+                                        <option value="generic">Generic</option>
+                                        <option value="chatgpt">ChatGPT</option>
+                                        <option value="claude">Claude</option>
+                                        <option value="gemini">Gemini</option>
+                                        <option value="copilot">Copilot</option>
+                                        <option value="perplexity">
+                                            Perplexity
+                                        </option>
+                                    </select>
+                                    <div class="helper">
+                                        Light wording adjustments for each
+                                        assistant.
+                                    </div>
+                                </div>
+
+                                <!-- Output style -->
+                                <div class="settings-card">
+                                    <h2>Output style</h2>
+                                    <select id="outputStyle">
+                                        <option value="pdf-report">
+                                            Polished report (PDF-ready)
+                                        </option>
+                                        <option value="chat-report">
+                                            Structured chat-style report
+                                        </option>
+                                        <option value="one-page">
+                                            Compressed one-page briefing
+                                        </option>
+                                    </select>
+                                    <div class="helper">
+                                        Choose how compact and executive the
+                                        output should be.
+                                    </div>
+                                </div>
+
+                                <!-- Organizational culture -->
+                                <div class="settings-card">
+                                    <h2>Organizational culture</h2>
+                                    <select id="orgCulture">
+                                        <option value="not-specified">
+                                            Not specified / infer if possible
+                                        </option>
+                                        <option value="scrappy-startup">
+                                            Scrappy Startup
+                                        </option>
+                                        <option value="conservative-corporate">
+                                            Conservative Corporate
+                                        </option>
+                                        <option value="big-tech">
+                                            Big Tech
+                                        </option>
+                                        <option value="non-profit">
+                                            Non-Profit
+                                        </option>
+                                        <option value="public-sector">
+                                            Public Sector
+                                        </option>
+                                        <option value="industrial-enterprise">
+                                            Industrial Enterprise
+                                        </option>
+                                    </select>
+                                    <div class="helper">
+                                        Adds a culture-fit lens to the analysis.
+                                    </div>
+                                </div>
+
+                                <!-- Optional context -->
+                                <div class="settings-card">
+                                    <h2>Optional context for your AI</h2>
+                                    <textarea
+                                        id="marketContext"
+                                        class="smalltext"
+                                        placeholder="Optional: add anything you think is missing, such as company values, recent news, salary benchmarks, internal context, recruiter feedback, or role nuances."
+                                    ></textarea>
+                                    <div class="helper">
+                                        Optional: Provide additional context
+                                        around the JD or your CV to be taken
+                                        into account in the final prompt
+                                        instructions.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="full">
+                            <div
+                                class="result-card-soft"
+                                style="margin-top: 12px"
                             >
-                                Create My Job Match Analysis
-                            </button>
-                        </div>
-                    </div>
-                    <div class="grid">
-                        <div>
-                            <h2>Prompt tuning (optional)</h2>
-                            <select id="aiTarget">
-                                <option value="generic">Generic</option>
-                                <option value="chatgpt">ChatGPT</option>
-                                <option value="claude">Claude</option>
-                                <option value="gemini">Gemini</option>
-                                <option value="copilot">Copilot</option>
-                                <option value="perplexity">Perplexity</option>
-                            </select>
-                            <div class="helper">
-                                The analytical framework stays the same. Only
-                                light wording adjustments are made for each
-                                assistant.
-                            </div>
-                        </div>
-                        <div>
-                            <h2>Focus areas</h2>
-                            <div class="focus-item">
-                                <label
-                                    ><input
-                                        type="checkbox"
-                                        id="focusCV"
-                                        checked
-                                    />
-                                    CV optimization</label
-                                >
-                                <span class="payoff"
-                                    >Sharpen profile summary, bullets, and
-                                    positioning for this exact role.</span
-                                >
-                            </div>
-                            <div class="focus-item">
-                                <label
-                                    ><input
-                                        type="checkbox"
-                                        id="focusATS"
-                                        checked
-                                    />
-                                    ATS keyword gaps</label
-                                >
-                                <span class="payoff"
-                                    >Find keyword gaps that ATS filters or
-                                    recruiter searches may block.</span
-                                >
-                            </div>
-                            <div class="focus-item">
-                                <label
-                                    ><input
-                                        type="checkbox"
-                                        id="focusStrategy"
-                                        checked
-                                    />
-                                    Application strategy</label
-                                >
-                                <span class="payoff"
-                                    >Clarify whether to apply directly, network
-                                    first, or reposition.</span
-                                >
-                            </div>
-                            <div class="focus-item">
-                                <label
-                                    ><input
-                                        type="checkbox"
-                                        id="focusExecutive"
-                                        checked
-                                    />
-                                    Executive summary</label
-                                >
-                                <span class="payoff"
-                                    >Get a crisp go / no-go recommendation and
-                                    main decision risk.</span
-                                >
-                            </div>
-                            <div class="focus-item">
-                                <label
-                                    ><input
-                                        type="checkbox"
-                                        id="focusOutreach"
-                                        checked
-                                    />
-                                    Recruiter / Hiring Manager Outreach
-                                    Draft</label
-                                >
-                                <span class="payoff"
-                                    >Generate a concise outreach message if
-                                    contact hints appear in the JD or are
-                                    implied.</span
-                                >
-                            </div>
-                            <div class="focus-item">
-                                <label
-                                    ><input
-                                        type="checkbox"
-                                        id="focusCoverLetter"
-                                    />
-                                    Cover Letter Opening Draft</label
-                                >
-                                <span class="payoff"
-                                    >Generate a concise 3-paragraph opening
-                                    tailored to the role’s hidden intent.</span
-                                >
-                            </div>
-                            <div class="focus-item">
-                                <label
-                                    ><input
-                                        type="checkbox"
-                                        id="focusCompensation"
-                                        checked
-                                    />
-                                    Compensation positioning</label
-                                >
-                                <span class="payoff"
-                                    >Assess salary/package context and how to
-                                    position expectations if the role moves
-                                    forward.</span
-                                >
-                            </div>
-                            <div class="focus-item">
-                                <label
-                                    ><input type="checkbox" id="focusMarket" />
-                                    Market / company context analysis</label
-                                >
-                                <span class="payoff"
-                                    >Add company/news/salary context when
-                                    relevant.</span
-                                >
-                            </div>
-                        </div>
-                        <div>
-                            <h2>Organizational culture</h2>
-                            <select id="orgCulture">
-                                <option value="not-specified">
-                                    Not specified / infer if possible
-                                </option>
-                                <option value="scrappy-startup">
-                                    Scrappy Startup
-                                </option>
-                                <option value="conservative-corporate">
-                                    Conservative Corporate
-                                </option>
-                                <option value="big-tech">Big Tech</option>
-                                <option value="non-profit">Non-Profit</option>
-                                <option value="public-sector">
-                                    Public Sector
-                                </option>
-                                <option value="industrial-enterprise">
-                                    Industrial Enterprise
-                                </option>
-                            </select>
-                            <div class="helper">
-                                Adds a culture-fit lens so the AI assesses not
-                                only skills, but likely executive fit with the
-                                organization style.
-                            </div>
-                        </div>
-                        <div>
-                            <h2>Output style</h2>
-                            <select id="outputStyle">
-                                <option value="pdf-report">
-                                    Polished report suitable for
-                                    saving/exporting as PDF
-                                </option>
-                                <option value="chat-report">
-                                    Structured chat-style report
-                                </option>
-                                <option value="one-page">
-                                    Compressed one-page briefing
-                                </option>
-                            </select>
-                            <div class="helper">
-                                Choose how structured and compact the final
-                                output should be.
-                            </div>
-                        </div>
-                        <div class="full">
-                            <h2>Optional context for your AI</h2>
-                            <textarea
-                                id="marketContext"
-                                class="smalltext"
-                                placeholder="Optional: add anything you think is missing, such as company values, recent news, salary benchmarks, internal context, recruiter feedback, or role nuances."
-                            ></textarea>
-                            <div class="helper">
-                                Optional free-text context. If the
-                                market/company context focus is selected, the AI
-                                will automatically create a short market/company
-                                context section using the JD plus this
-                                additional input when helpful.
-                            </div>
-                        </div>
-                        <div class="full">
-                            <div class="result-card-soft">
                                 <h2>Create your analysis</h2>
                                 <div class="helper">
                                     Once steps 1 to 3 are complete, create the
@@ -1279,7 +1216,10 @@
                 <div class="wizard-panel" id="step4">
                     <div class="result-top">
                         <div>
-                            <h2>Paste your prompt into your preferred AI</h2>
+                            <h2>
+                                Your personal prompt is ready. Paste it into
+                                your preferred AI.
+                            </h2>
                             <div class="helper">
                                 Click any AI below. The prompt is copied
                                 automatically, then the site opens in a new tab.
@@ -1337,15 +1277,12 @@
                                 different AI assistants. Different models often
                                 surface different insights.
                             </div>
-                            <div class="micro-preview" style="flex: 1">
-                                <b>What you’ll get</b><br />Executive Summary ·
-                                Competency Heatmap · ATS Gaps · CV Optimization
-                                Tips · Practical Application Advice
-                            </div>
                         </div>
                     </div>
 
-                    <h2 style="margin-top: 22px">Job Match Analysis Prompt</h2>
+                    <h2 style="margin-top: 22px">
+                        Job Match Analysis Prompt in full transparency
+                    </h2>
                     <div class="row">
                         <button class="secondary" onclick="copyPrompt()">
                             Copy Prompt
@@ -1354,29 +1291,12 @@
                             Download Prompt
                         </button>
                     </div>
-                    <div class="row" style="margin-top: 12px">
-                        <label class="option-checkbox"
-                            ><input type="checkbox" id="optSalary" checked />
-                            Add Salary Context</label
-                        >
-                        <label class="option-checkbox"
-                            ><input type="checkbox" id="optCulture" checked />
-                            Emphasize Culture Fit</label
-                        >
-                        <label class="option-checkbox"
-                            ><input type="checkbox" id="optOutreach" checked />
-                            Outreach Email Draft</label
-                        >
-                    </div>
-                    <div class="helper">
-                        These buttons append targeted instructions to the
-                        current prompt, so you can generate tailored follow-ups
-                        without rebuilding everything.
-                    </div>
+
                     <textarea
                         id="promptOutput"
                         class="promptbox"
                         placeholder="Your AI-ready prompt will appear here."
+                        style="margin-top: 12px"
                     ></textarea>
                     <div class="status" id="promptStatus">
                         This version asks the AI to act like an executive
@@ -1384,46 +1304,31 @@
                         scorer.
                     </div>
 
-                    <h2 style="margin-top: 22px">Give feedback</h2>
-                    <div class="helper">
-                        Your feedback is submitted to help improve this tool.
-                        Rate your experience and leave a comment.
+                    <div class="card" style="margin-top: 20px">
+                        <h2><b>Give feedback</b> & help improve JobFit</h2>
+
+                        <div class="helper">
+                            Takes 20 seconds — helps us improve the quality of
+                            your results 🙏 What should we improve next? (UX,
+                            output quality, missing features)
+                        </div>
+
+                        <iframe
+                            src="https://docs.google.com/forms/d/e/1FAIpQLSezqAwVuTXLrClzNjuE9fz0FH7pI4olHC5iv2z8qqpWDuHWag/viewform?embedded=true"
+                            width="100%"
+                            height="740"
+                            frameborder="0"
+                            marginheight="0"
+                            marginwidth="0"
+                            style="
+                                border-radius: 12px;
+                                border: none;
+                                margin-top: 12px;
+                            "
+                        >
+                            Loading…
+                        </iframe>
                     </div>
-                    <form id="feedbackForm" method="POST" name="feedback">
-                        <input
-                            type="hidden"
-                            name="form-name"
-                            value="feedback"
-                        />
-                        <p style="display: none">
-                            <label
-                                >Don't fill this: <input name="bot-field"
-                            /></label>
-                        </p>
-                        <div class="star-rating" style="margin-top: 8px">
-                            <input
-                                type="hidden"
-                                name="rating"
-                                id="feedbackRating"
-                                value="0"
-                            />
-                            <span class="star" data-value="1">★</span>
-                            <span class="star" data-value="2">★</span>
-                            <span class="star" data-value="3">★</span>
-                            <span class="star" data-value="4">★</span>
-                            <span class="star" data-value="5">★</span>
-                        </div>
-                        <textarea
-                            id="feedbackText"
-                            name="comment"
-                            class="smalltext"
-                            placeholder="What worked well? What should change next?"
-                            style="margin-top: 10px"
-                        ></textarea>
-                        <div class="row" style="margin-top: 10px">
-                            <button type="submit">Submit feedback</button>
-                        </div>
-                    </form>
                     <div class="status" id="feedbackStatus"></div>
                 </div>
             </div>
@@ -1452,7 +1357,7 @@
             pdfjsLib.GlobalWorkerOptions.workerSrc =
                 "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
-            function showStep(n) {
+            function showStep(n, skipScroll = false) {
                 const tab4 = document.getElementById("tab4");
                 const note = document.getElementById("wizardNote");
                 if (n === 4 && tab4 && tab4.classList.contains("disabled")) {
@@ -1475,8 +1380,14 @@
                     note.textContent =
                         n < 4
                             ? "Result unlocks after you complete steps 1–3 and create the analysis."
-                            : "Your result is ready. You can now copy, download, or launch it in your preferred AI.";
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                            : "";
+                const target = document.getElementById("mainContent");
+                if (!skipScroll && target) {
+                    target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                }
             }
             function goToStep2() {
                 const jd = cleanText(document.getElementById("jd").value, 50);
@@ -2358,80 +2269,7 @@ Generate the final report now.`;
                     .replace(/'/g, "&#039;");
             }
 
-            const feedbackForm = document.getElementById("feedbackForm");
-            if (feedbackForm) {
-                feedbackForm.addEventListener("submit", async function (e) {
-                    e.preventDefault();
-                    const rating =
-                        document.getElementById("feedbackRating").value;
-                    const comment = (
-                        document.getElementById("feedbackText").value || ""
-                    ).trim();
-                    const body = new URLSearchParams();
-                    body.append("form-name", "feedback");
-                    body.append("rating", rating);
-                    body.append("comment", comment);
-                    try {
-                        const res = await fetch("/", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type":
-                                    "application/x-www-form-urlencoded",
-                            },
-                            body: body.toString(),
-                        });
-                        setStatus(
-                            "feedbackStatus",
-                            res.ok
-                                ? "Thank you — your feedback was submitted."
-                                : "Feedback could not be submitted right now.",
-                            res.ok ? "ok" : "bad",
-                        );
-                        if (res.ok) {
-                            feedbackForm.reset();
-                            document.getElementById("feedbackRating").value =
-                                "0";
-                            document
-                                .querySelectorAll(".star-rating .star")
-                                .forEach((s) => s.classList.remove("selected"));
-                        }
-                    } catch (err) {
-                        setStatus(
-                            "feedbackStatus",
-                            "Feedback could not be submitted right now.",
-                            "bad",
-                        );
-                    }
-                });
-                const stars = document.querySelectorAll(".star-rating .star");
-                stars.forEach((star) => {
-                    star.addEventListener("mouseenter", () => {
-                        const v = Number(star.dataset.value);
-                        stars.forEach((s) =>
-                            s.classList.toggle(
-                                "hovered",
-                                Number(s.dataset.value) <= v,
-                            ),
-                        );
-                    });
-                    star.addEventListener("mouseleave", () => {
-                        stars.forEach((s) => s.classList.remove("hovered"));
-                    });
-                    star.addEventListener("click", () => {
-                        const v = Number(star.dataset.value);
-                        document.getElementById("feedbackRating").value =
-                            String(v);
-                        stars.forEach((s) =>
-                            s.classList.toggle(
-                                "selected",
-                                Number(s.dataset.value) <= v,
-                            ),
-                        );
-                    });
-                });
-            }
-
-            showStep(1);
+            showStep(1, true);
             try {
                 renderJDHistory();
             } catch (e) {
