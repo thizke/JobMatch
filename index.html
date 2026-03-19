@@ -248,6 +248,7 @@
                 margin-top: 12px;
                 margin-bottom: 18px;
             }
+
             .wizard-tab {
                 padding: 16px;
                 border-radius: 14px;
@@ -500,9 +501,6 @@
                 margin-bottom: 8px;
             }
 
-            .wizard-tabs {
-                grid-template-columns: repeat(4, 1fr) !important;
-            }
             .wizard-tab.disabled {
                 opacity: 0.45;
                 cursor: not-allowed;
@@ -1148,11 +1146,8 @@
                                         <option value="pdf-report">
                                             Polished report (PDF-ready)
                                         </option>
-                                        <option value="chat-report">
-                                            Structured chat-style report
-                                        </option>
                                         <option value="one-page">
-                                            Compressed one-page briefing
+                                            1-pager (executive view)
                                         </option>
                                     </select>
                                     <div class="helper">
@@ -2105,17 +2100,76 @@
                 };
                 return map[val] || map["not-specified"];
             }
+
             function outputStyleText(style) {
-                if (style === "one-page")
-                    return "Produce a compact one-page style executive briefing with tight sections and minimal filler.";
-                if (style === "chat-report")
-                    return "Produce a structured chat-style report with clean headings, short paragraphs, and only minimal bullets.";
-                return "Produce a polished report suitable for saving or exporting as PDF, with clean headings, balanced spacing, and professional formatting.";
+                if (style === "one-page") {
+                    return `Produce a true 1-page executive briefing.
+            - Keep the report highly compressed and decision-oriented
+            - Limit bullet points to essentials only
+            - Prioritize decision usefulness over completeness
+            - Compress sections aggressively
+            - Do not repeat evidence
+            - Keep wording concise and executive-friendly
+            - Include only the most decision-relevant evidence
+
+            1. Executive Summary (including hidden hiring intent in 1 phrase)
+            2. Quick JobFit matching - limit to 3 bullet points ;
+                1. High fit (8-10) - list ;
+                2. Medium fit (6-7) - list ;
+                3. Low fit(0-5) - list
+            3. Competencies & ATS Keywords - limit to 3 bullet points
+                1. Matching competencies - list ;
+                2. Missing competencies - list ;
+                3. JD Keywords missing in CV - list .
+            4. Red Flags & Objections  - in max 3 short bulletpoints >> Likely Concern | Your Counter-Argument
+            5. Application Recommendations - limit to 2 bullet points ;
+                1. CV Optimization tips - 1 sentence ;
+                2. Application tips - 1 sentence.
+
+            If requested, append only the most essential add-on:
+            - a short outreach draft, or
+            - a short cover letter opener, or
+            - a short compensation note, or
+            - a short market/company context note
+
+            - Aim for a format that could realistically fit on one page when exported`;
+                }
+
+                return `
+                1. Executive Summary
+                2. JobFit Matching
+                Include a structured scoring breakdown table with columns: Dimension | Weight | Raw Fit | Score
+                3. Hidden Hiring Intent
+                4. Matching Competencies
+                Provide a compact markdown table with columns: JD Requirement | CV Evidence | Fit
+                Use fit labels: 🟢 Strong / 🟠 Partial / 🔴 Weak
+                5. Less Evident or Missing Competencies
+                6. Red Flags & Objections
+                Provide a compact table with columns: Likely Concern | Your Counter-Argument | Strength
+                Use labels: 🟢 Strong / 🟠 Weak / 🔴 No answer
+                7. ATS and Searchability Gaps
+                After this section, include an ATS Keyword Tracker table with columns: Keyword | In JD? | In CV? | Priority
+                Use labels: 🔴 Missing / 🟡 Partial / 🟢 Present
+                8. CV Optimization Tips
+                9. Cover Letter Opening Draft (only if requested)
+                Provide a concise 3-paragraph opener: hook from hidden intent, evidence bridge, call to action
+                10. Compensation Positioning (only if requested)
+                Provide a short note on how to frame salary/package expectations, using JD clues and optional market context if available
+                11. Culture & Executive Fit (only if requested)
+                12. Market / Company Context (only if requested)
+                13. Practical Application Advice
+                If requested, include a concise recruiter / hiring manager outreach draft
+                - If the JD itself contains recruiter or hiring manager names, emails, or contact hints, add LinkedIn search suggestions or pre-filled outreach angles using those details when appropriate
+                15. Final Recommendation`;
             }
+
             function buildPrompt(jd, cv, ai) {
                 const focus = buildFocusText();
                 const outputStyleEl = document.getElementById("outputStyle");
                 const style = outputStyleText(
+                    outputStyleEl ? outputStyleEl.value : "pdf-report",
+                );
+                const structure = outputStyleText(
                     outputStyleEl ? outputStyleEl.value : "pdf-report",
                 );
                 const culture = cultureText(
@@ -2185,31 +2239,7 @@ Use these standard dimensions when deriving the overall match score. Adapt them 
 - Education / qualification match — 10%
 
 REQUIRED REPORT STRUCTURE
-1. Executive Summary
-2. Quick Fit Snapshot
-Include a structured scoring breakdown table with columns: Dimension | Weight | Raw Fit | Score
-3. Hidden Hiring Intent
-4. Matching Competencies
-Provide a compact markdown table with columns: JD Requirement | CV Evidence | Fit
-Use fit labels: 🟢 Strong / 🟠 Partial / 🔴 Weak
-5. Less Evident or Missing Competencies
-6. Red Flags & Objections
-Provide a compact table with columns: Likely Concern | Your Counter-Argument | Strength
-Use labels: 🟢 Strong / 🟠 Weak / 🔴 No answer
-7. ATS and Searchability Gaps
-After this section, include an ATS Keyword Tracker table with columns: Keyword | In JD? | In CV? | Priority
-Use labels: 🔴 Missing / 🟡 Partial / 🟢 Present
-8. CV Optimization Tips
-9. Cover Letter Opening Draft (only if requested)
-Provide a concise 3-paragraph opener: hook from hidden intent, evidence bridge, call to action
-10. Compensation Positioning (only if requested)
-Provide a short note on how to frame salary/package expectations, using JD clues and optional market context if available
-11. Culture & Executive Fit
-12. Market / Company Context (only if requested)
-13. Practical Application Advice
-If requested, include a concise recruiter / hiring manager outreach draft
-- If the JD itself contains recruiter or hiring manager names, emails, or contact hints, add LinkedIn search suggestions or pre-filled outreach angles using those details when appropriate
-15. Final Recommendation
+${structure}
 
 INPUT DATA
 
